@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Webcam Image Demo</title>
+</head>
+<body>
+	<button type="button" onclick="getVideo()">Auf geht's!</button>
+	<video id="target" autoplay></video>
+
+	<script>
+		const video = document.getElementById('target');
+
+		const getVideo = async () => {
+			let stream;
+
+			try {
+				stream = await navigator.mediaDevices.getUserMedia({ video: { width: 1920, height: 1080 } });
+			} catch (error) {
+				console.error(error);
+			}
+			video.srcObject = stream;
+		}
+	</script>
+</body>
+</html>
