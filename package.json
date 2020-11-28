@@ -1,0 +1,35 @@
+{
+  "name": "bonbon",
+  "version": "0.0.0",
+  "description": "A web-app for digital receipt management.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Muhlex/BonBon.git"
+  },
+  "contributors": [
+    {
+      "name": "Felix Bastian",
+      "email": "fb083@hdm-stuttgart.de"
+    },
+    {
+      "name": "Sebastian Martin",
+      "email": "sm183@hdm-stuttgart.de"
+    }
+  ],
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/Muhlex/BonBon/issues"
+  },
+  "homepage": "https://github.com/Muhlex/BonBon#readme",
+  "dependencies": {
+    "vue": "^3.0.2"
+  },
+  "devDependencies": {
+    "vite": "^1.0.0-rc.8",
+    "@vue/compiler-sfc": "^3.0.2"
+  }
+}
