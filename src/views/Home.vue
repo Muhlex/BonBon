@@ -1,14 +1,52 @@
 <template>
-  <HelloWorld msg="Hello Vue 3.0 + Vite" />
+  <HelloWorld />
+  <hr>
+  <button @click="addExampleReceipts">
+    Reactively insert example receipt data.
+  </button>
+  <button @click="addExampleReceipt">
+    Another one.
+  </button>
+  <ul>
+    <li v-for="receipt in store.receipts" :key="receipt.id">
+      {{ receipt.vendor }}: {{ receipt.costInCurrency }}€
+      <ul>
+        <li v-for="item in receipt.items" :key="item.id">
+          {{ item.label }} ({{ item.costInCurrency }}€ [{{ item.cost }} in cents])
+        </li>
+      </ul>
+    </li>
+  </ul>
 </template>
 
 <script>
 import HelloWorld from '../components/HelloWorld.vue';
+import store from '../store/index';
+import Item from '../store/item';
 
 export default {
   name: 'Home',
   components: {
     HelloWorld,
+  },
+  data() {
+    return {
+      store,
+    };
+  },
+  methods: {
+    addExampleReceipts() {
+      store.addReceipt({ vendor: 'Edeka', overrideCost: 1499 });
+
+      store.addReceipt({ vendor: 'REWE', items: [
+        new Item({ label: 'Zahnpasta', cost: 149 }),
+        new Item({ label: 'Fertigpizza', cost: 320 }),
+        new Item({ label: 'Tomaten', cost: 76 }),
+      ] });
+    },
+    addExampleReceipt() {
+      store.addReceipt({ vendor: 'Penny', overrideCost: 2580 });
+    },
   },
 };
 </script>
