@@ -7,6 +7,9 @@
   <button @click="addExampleReceipt">
     Another one.
   </button>
+  <button @click="makeItemsFree">
+    Make all items free.
+  </button>
   <ul>
     <li v-for="receipt in store.receipts" :key="receipt.id">
       {{ receipt.vendor }}: {{ receipt.costInCurrency }}€
@@ -46,6 +49,11 @@ export default {
     },
     addExampleReceipt() {
       store.addReceipt({ vendor: 'Penny', overrideCost: 2580 });
+    },
+    makeItemsFree() {
+      store.receipts.forEach(receipt => receipt.items.forEach(item => {
+        item.setCost(0);
+      }));
     },
   },
 };
