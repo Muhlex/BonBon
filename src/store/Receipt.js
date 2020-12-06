@@ -1,16 +1,17 @@
-import { reactive, computed } from 'vue';
+import { computed } from 'vue';
 import { nanoid } from 'nanoid';
 import Item from './item';
 
 export default class Receipt {
   constructor({ timestamp, vendor, overrideCost, items }) {
-    Object.assign(this, reactive({
+    Object.assign(this, {
       id: nanoid(),
       timestamp: timestamp || new Date(),
       vendor,
       overrideCost, // In a perfect world, the total is the sum of all items. Otherwise it's this.
-      items: items || [],
-    }));
+      // Check if passed items are all instances of Item. Otherwise call the constructor.
+      items: items ? items.map(item => (item instanceof Item) ? item : new Item(item)) : [],
+    });
   }
 
   get cost() {

@@ -10,6 +10,9 @@
   <button @click="makeItemsFree">
     Make all items free.
   </button>
+  <button @click="clearStore">
+    Clear store.
+  </button>
   <ul>
     <li v-for="receipt in store.receipts" :key="receipt.id">
       {{ receipt.vendor }}: {{ receipt.costInCurrency }}€
@@ -54,6 +57,9 @@ export default {
       store.receipts.forEach(receipt => receipt.items.forEach(item => {
         item.setCost(0);
       }));
+    },
+    clearStore() {
+      store.clear();
     },
   },
 };
