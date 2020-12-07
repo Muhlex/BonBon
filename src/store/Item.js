@@ -2,11 +2,12 @@ import { computed } from 'vue';
 import { nanoid } from 'nanoid';
 
 export default class Item {
-  constructor({ label, cost }) {
+  constructor({ label, cost, budgeted = false }) {
     Object.assign(this, {
       id: nanoid(),
       label,
       cost,
+      budgeted,
     });
   }
 

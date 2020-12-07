@@ -10,11 +10,17 @@ class Store {
 
     // Watch for any state changes and save them locally (this could send them to a server one day)
     watch(state, (newValue) => {
-      localStorage.setItem('bonbon.data', JSON.stringify(newValue)); // TODO: Use IndexedDB
+      localStorage.setItem('bonbon.data', JSON.stringify(newValue)); // TODO: Use Firebase
     });
 
     // Assign the reactive class attributes directly to the instance.
     Object.assign(this, state);
+  }
+
+  getBudgetedInRange(from, to = new Date()) {
+    // Retrieve all items marked to appear in budget book in a specific time period.
+    const receipts = this.receipts.filter(({ timestamp }) => timestamp > from && timestamp < to);
+    return receipts.map(({ timestamp, budgetBookItems }) => ({ timestamp, items: budgetBookItems }));
   }
 
   addReceipt(value) {
@@ -27,7 +33,7 @@ class Store {
   }
 }
 
-const state = JSON.parse(localStorage.getItem('bonbon.data')); // TODO: Use IndexedDB
+const state = JSON.parse(localStorage.getItem('bonbon.data')); // TODO: Use Firebase
 const store = state ? new Store(state) : new Store();
 
 export default store;

@@ -28,7 +28,6 @@
 <script>
 import HelloWorld from '../components/HelloWorld.vue';
 import store from '../store/index';
-import Item from '../store/item';
 
 export default {
   name: 'Home',
@@ -45,9 +44,9 @@ export default {
       store.addReceipt({ vendor: 'Edeka', overrideCost: 1499 });
 
       store.addReceipt({ vendor: 'REWE', items: [
-        new Item({ label: 'Zahnpasta', cost: 149 }),
-        new Item({ label: 'Fertigpizza', cost: 320 }),
-        new Item({ label: 'Tomaten', cost: 76 }),
+        { label: 'Zahnpasta', cost: 149 },
+        { label: 'Fertigpizza', cost: 320, budgeted: true },
+        { label: 'Tomaten', cost: 76 },
       ] });
     },
     addExampleReceipt() {

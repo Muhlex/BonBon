@@ -6,7 +6,7 @@ export default class Receipt {
   constructor({ timestamp, vendor, overrideCost, items }) {
     Object.assign(this, {
       id: nanoid(),
-      timestamp: timestamp || new Date(),
+      timestamp: timestamp || new Date(), // TODO: Stringify this
       vendor,
       overrideCost, // In a perfect world, the total is the sum of all items. Otherwise it's this.
       // Check if passed items are all instances of Item. Otherwise call the constructor.
@@ -24,6 +24,10 @@ export default class Receipt {
   }
   get costInCurrency() {
     return computed(() => (this.cost / 100).toFixed(2).replace('.', ','));
+  }
+
+  get budgetedItems() {
+    return this.items.filter(item => item.budgeted);
   }
 
   setVendor(value) {
