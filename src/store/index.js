@@ -1,8 +1,8 @@
 import { reactive, watch } from 'vue';
-import Receipt from './Receipt';
+import Receipt from './Receipt.js';
 
 class Store {
-  constructor({ receipts }) {
+  constructor({ receipts } = {}) {
     const state = reactive({
       // Check if passed receipts are all instances of Receipt. Otherwise call the constructor.
       receipts: receipts ? receipts.map(r => (r instanceof Receipt) ? r : new Receipt(r)) : [],

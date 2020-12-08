@@ -1,6 +1,6 @@
 import { computed } from 'vue';
 import { nanoid } from 'nanoid';
-import Item from './item';
+import Item from './Item.js';
 
 export default class Receipt {
   constructor({ timestamp, vendor, overrideCost, items }) {

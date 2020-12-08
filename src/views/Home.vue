@@ -27,7 +27,7 @@
 
 <script>
 import HelloWorld from '../components/HelloWorld.vue';
-import store from '../store/index';
+import store from '../store';
 
 export default {
   name: 'Home',
