@@ -1,13 +1,18 @@
 <template>
   <p>Example component:</p>
-  <button @click="count++">
+  <Button @click="count++">
     count is: {{ count }}
-  </button>
+  </Button>
 </template>
 
 <script>
+import Button from 'primevue/button';
+
 export default {
   name: 'HelloWorld',
+  components: {
+    Button,
+  },
   data() {
     return {
       count: 0,
@@ -15,8 +20,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss" scoped>
-$redIfSassWorks: red;
-h1 { color: $redIfSassWorks; }
-</style>
