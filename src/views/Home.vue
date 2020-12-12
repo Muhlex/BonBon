@@ -23,16 +23,21 @@
       </ul>
     </li>
   </ul>
+
+  <!-- AddItem Dev-Test -->
+  <AddItem />
 </template>
 
 <script>
 import HelloWorld from '../components/HelloWorld.vue';
+import AddItem from '../components/AddItem.vue';
 import store from '../store';
 
 export default {
   name: 'Home',
   components: {
     HelloWorld,
+    AddItem,
   },
   data() {
     return {
