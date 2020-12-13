@@ -54,11 +54,13 @@ export default {
     },
   },
   beforeUpdate() {
+    // LifecycleHook tracked on Updating Data inside Component
     this.open == false ?
       document.body.classList.remove('overlay-open'):
       document.body.classList.add('overlay-open');
   },
   beforeUnmount() {
+    // LifecycleHook same as beforeDestroyed
     document.body.classList.remove('overlay-open');
   },
   methods: {

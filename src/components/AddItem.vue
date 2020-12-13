@@ -57,7 +57,7 @@ export default {
   },
   methods: {
     resetInput() {
-      // Reset Value of Input
+      // Reset Value of Input at CloseEvent of Overlay-Component
       this.$refs.input.value = '';
     },
   },
