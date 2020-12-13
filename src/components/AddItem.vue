@@ -24,7 +24,7 @@
         type="file"
         accept="image/*, application/pdf"
         capture="camera"
-        @change="open = true"
+        @change="openReceiptForm"
       >
       <!--
           TO-DO:
@@ -37,28 +37,52 @@
   <Overlay 
     v-model:open="open"
     @close="resetInput"
-  />
+  >
+    <NewReceiptForm 
+      v-model:file="file"
+    />
+  </Overlay>
 </template>
 
 <script>
 import Button from 'primevue/button';
 import Overlay from './Overlay';
+import NewReceiptForm from './NewReceiptForm';
 
 export default {
   name: 'AddItem',
   components: {
     Button,
     Overlay,
+    NewReceiptForm,
   },
   data() {
     return {
       open: false,
+      file: {},
     };
   },
   methods: {
+    openReceiptForm(e) {
+      // Set Open State of Overlay includes NewReceiptForm
+      this.open = true;
+
+      // setting selected FileData
+      this.setFile(e);
+    },
+    setFile({ target: { files } }) {
+      // set FileData by Destructuring
+      this.file = files[0];
+
+      // Save Image.src as Base64 String
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        this.file.src = reader.result;
+      };
+      reader.readAsDataURL(files[0]);
+    },
     resetInput() {
-      // Reset Value of Input at CloseEvent of Overlay-Component
-      this.$refs.input.value = '';
+      console.log('resetInput()');
     },
   },
 };

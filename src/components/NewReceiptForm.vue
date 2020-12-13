@@ -11,7 +11,21 @@
         -> Possibility to add Custom Categories -> also aviable at Statistics
   -->
   <div class="form-container">
-    <!-- Insert Form Elements here -->
+    <!-- 
+      Selectetd File
+        * Show Thumbnail and Name
+        * EditingOption
+    -->
+    <div class="file-preview">
+      <!-- Selected File Elements here -->
+    </div>
+
+    <!-- 
+      New Receipt Form here
+    -->
+    <form action="submit" method="post">
+      <!-- ReceiptForm-Elements here -->
+    </form>
   </div>
 </template>
 
@@ -19,13 +33,11 @@
 import Button from 'primevue/button';
 
 export default {
-  name: 'AddItem',
+  name: 'NewReceiptForm',
   components: {
     Button,
   },
   data() {
-    return {
-    };
   },
   methods: {
   },
