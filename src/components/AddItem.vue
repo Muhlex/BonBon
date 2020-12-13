@@ -5,13 +5,18 @@
       * includes Button to upload File
       * FileUpload via Tag:Input Type:File Accept:Camera
         -> on MobileDevices Camera will be supportet instead of FileUpload
-    -->
+      
 
-    <!-- Input using for FileUpload -->
+      Label wraps hidden Input and Icon to fake an Button.
+      Through the Label-Tag its possible to hide Input-Tag but still have Access to it
+    -->
     <label for="FileUpload" class="custom-file-upload">
       <!-- Icon pi-plus of PrimeIcons: https://www.primefaces.org/primevue/showcase/#/icons -->
       <i class="pi pi-plus" />
-      
+      <!--
+        Input using for FileUpload 
+        Captur the Camera on mobile Device or FileUpload on DektopMachine/Laptop
+      -->
       <input
         id="FileUpload"
         ref="input"
@@ -19,22 +24,42 @@
         type="file"
         accept="image/*, application/pdf"
         capture="camera"
+        @change="open = true"
       >
+      <!--
+          TO-DO:
+          * Save File-Data at Store
+          * Make File-Data usable using FileReader-Object (JS)
+      -->
     </label>
   </Button>
+
+  <Overlay 
+    v-model:open="open"
+    @close="resetInput"
+  />
 </template>
 
 <script>
 import Button from 'primevue/button';
+import Overlay from './Overlay';
 
 export default {
   name: 'AddItem',
   components: {
     Button,
+    Overlay,
   },
   data() {
     return {
+      open: false,
     };
+  },
+  methods: {
+    resetInput() {
+      // Reset Value of Input
+      this.$refs.input.value = '';
+    },
   },
 };
 </script>
