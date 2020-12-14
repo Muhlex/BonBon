@@ -1,4 +1,6 @@
 <template>
+  <SingleReceiptEdit />
+  <hr>
   <HelloWorld />
   <hr>
   <button @click="addExampleReceipts">
@@ -27,12 +29,14 @@
 
 <script>
 import HelloWorld from '../components/HelloWorld.vue';
+import SingleReceiptEdit from '../components/SingleReceiptEdit.vue';
 import store from '../store';
 
 export default {
   name: 'Home',
   components: {
     HelloWorld,
+    SingleReceiptEdit,
   },
   data() {
     return {
