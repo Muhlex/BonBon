@@ -63,26 +63,18 @@ export default {
     };
   },
   methods: {
-    openReceiptForm(e) {
+    openReceiptForm({target: { files }}) {
       // Set Open State of Overlay includes NewReceiptForm
       this.open = true;
 
       // setting selected FileData
-      this.setFile(e);
-    },
-    setFile({ target: { files } }) {
-      // set FileData by Destructuring
       this.file = files[0];
-
-      // Save Image.src as Base64 String
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        this.file.src = reader.result;
-      };
-      reader.readAsDataURL(files[0]);
     },
     resetInput() {
       console.log('resetInput()');
+    },
+    log() {
+      console.log(this.file.src);
     },
   },
 };

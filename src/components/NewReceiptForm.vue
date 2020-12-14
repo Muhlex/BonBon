@@ -18,6 +18,7 @@
     -->
     <div class="file-preview">
       <!-- Selected File Elements here -->
+      <img :src="src" alt="">
     </div>
 
     <!-- 
@@ -37,7 +38,23 @@ export default {
   components: {
     Button,
   },
+  props: {
+    file: {
+      type: Object,
+      default: () => {},
+    },
+  },
   data() {
+    return {
+      reader: new FileReader(),
+      src: undefined,
+    };
+  },
+  mounted() {
+    this.reader.onload = () => {
+      this.src = this.reader.result;
+    };
+    this.reader.readAsDataURL(this.file);
   },
   methods: {
   },
