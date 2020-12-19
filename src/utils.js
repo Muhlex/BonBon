@@ -17,3 +17,22 @@ export const promptImageInput = (camera = false) => {
     };
   });
 };
+
+export const imageconvert = (src) => {
+  // Creates PseudoElement Canvas; setting Canvas-Heigh/-Width to 1000 by default
+  const canvas = document.createElement('canvas');
+  canvas.width = canvas.height = 1000;
+  // Createing new Image; Define on Load-Event
+  const img = new Image();
+  img.onload = e => {
+    // Drawing Image to Canvas when its loaded and converting Image.src to type JPEG
+    canvas.getContext('2d').drawImage(img, 0, 0);
+    e.target.src = canvas.toDataURL('image/jpeg', 1);
+  };
+  // Setting originally Image.src
+  img.src = src;
+
+  // Setting Canvas Dimensions
+
+  return img;
+};
