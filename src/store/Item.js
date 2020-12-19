@@ -1,14 +1,14 @@
-import { computed } from 'vue';
+import { reactive, computed } from 'vue';
 import { nanoid } from 'nanoid';
 
 export default class Item {
-  constructor({ label, cost, budgeted = false }) {
-    Object.assign(this, {
+  constructor({ label, cost, budgeted = false } = {}) {
+    Object.assign(this, reactive({
       id: nanoid(),
       label,
       cost,
       budgeted,
-    });
+    }));
   }
 
   get costInCurrency() {
