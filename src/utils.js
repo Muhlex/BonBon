@@ -18,21 +18,30 @@ export const promptImageInput = (camera = false) => {
   });
 };
 
-export const imageconvert = (src) => {
-  // Creates PseudoElement Canvas; setting Canvas-Heigh/-Width to 1000 by default
-  const canvas = document.createElement('canvas');
-  canvas.width = canvas.height = 1000;
-  // Createing new Image; Define on Load-Event
-  const img = new Image();
-  img.onload = e => {
-    // Drawing Image to Canvas when its loaded and converting Image.src to type JPEG
-    canvas.getContext('2d').drawImage(img, 0, 0);
-    e.target.src = canvas.toDataURL('image/jpeg', 1);
-  };
-  // Setting originally Image.src
-  img.src = src;
+export const imageconvert = (src, maxSize = 800, format = 'jpeg', quality = 0.9) => {
+  return new Promise((resolve) => {
+    const canvas = document.createElement('canvas');
+    const img = new Image();
+    img.src = src;
 
-  // Setting Canvas Dimensions
+    img.onload = () => {
+      const resize = (side) => {
+        const factor = (maxSize/side);
+        img.width = Math.floor(img.width * factor);
+        img.height = Math.floor(img.height * factor);
+      };
 
-  return img;
+      // Check for Imgsize is greater than maxSize
+      if (img.width > maxSize || img.height > maxSize ) {
+        img.width > img.height ? resize(img.width) :  resize(img.height);
+      }
+      
+      // Set Canvas to Image-Dimensions
+      canvas.width = img.width;
+      canvas.height = img.height;
+
+      canvas.getContext('2d').drawImage(img, 0, 0 , img.width, img.height);
+      resolve(canvas.toDataURL(`image/${format}`, quality));
+    };
+  });
 };

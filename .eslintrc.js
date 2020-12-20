@@ -11,7 +11,7 @@ module.exports = {
     parser: 'babel-eslint'
   },
   rules: {
-    'indent': ['warn', 2],
+    'indent': ['warn', 2, { 'SwitchCase': 1 }],
     'comma-dangle': ['warn', 'always-multiline'],
     'semi': ['error', 'always'],
     'quotes': ['warn', 'single', { 'avoidEscape': false }],

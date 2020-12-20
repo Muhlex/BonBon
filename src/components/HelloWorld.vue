@@ -10,7 +10,7 @@
     take pic with caaaam
   </button>
   
-  <img v-if="image !== null" :src="image.src" alt="">
+  <img v-if="image !== null" :src="image" alt="">
   <canvas id="canvas" />
 </template>
 
@@ -32,9 +32,9 @@ export default {
   methods: {
     async takePic(cam) {
       const image = await promptImageInput(cam);
-      this.image = imageconvert(image);
+      this.image = await imageconvert(image);
 
-      console.log(this.image);
+      console.log({img: this.image});
     },
   },
 };
