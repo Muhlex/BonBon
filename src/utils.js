@@ -17,3 +17,31 @@ export const promptImageInput = (camera = false) => {
     };
   });
 };
+
+export const imageconvert = (src, maxSize = 800, format = 'jpeg', quality = 0.9) => {
+  return new Promise((resolve) => {
+    const canvas = document.createElement('canvas');
+    const img = new Image();
+    img.src = src;
+
+    img.onload = () => {
+      const resize = (side) => {
+        const factor = (maxSize/side);
+        img.width = Math.floor(img.width * factor);
+        img.height = Math.floor(img.height * factor);
+      };
+
+      // Check for Imgsize is greater than maxSize
+      if (img.width > maxSize || img.height > maxSize ) {
+        img.width > img.height ? resize(img.width) :  resize(img.height);
+      }
+      
+      // Set Canvas to Image-Dimensions
+      canvas.width = img.width;
+      canvas.height = img.height;
+
+      canvas.getContext('2d').drawImage(img, 0, 0 , img.width, img.height);
+      resolve(canvas.toDataURL(`image/${format}`, quality));
+    };
+  });
+};

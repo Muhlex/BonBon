@@ -9,13 +9,14 @@
   <button @click="takePic(true)">
     take pic with caaaam
   </button>
-  <img :src="src">
-  <input type="file">
+  
+  <img v-if="image !== null" :src="image" alt="">
+  <canvas id="canvas" />
 </template>
 
 <script>
 import Button from 'primevue/button';
-import { promptImageInput } from '../utils';
+import { promptImageInput, imageconvert } from '../utils';
 
 export default {
   name: 'HelloWorld',
@@ -25,13 +26,15 @@ export default {
   data() {
     return {
       count: 0,
-      src: null,
+      image: null,
     };
   },
   methods: {
     async takePic(cam) {
       const image = await promptImageInput(cam);
-      this.src = image;
+      this.image = await imageconvert(image);
+
+      console.log({img: this.image});
     },
   },
 };
