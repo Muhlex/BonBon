@@ -60,7 +60,7 @@ import InputText from 'primevue/inputtext';
 
 import store from '@/store';
 import Receipt from '@/store/Receipt';
-import { promptImageInput } from '@/utils';
+import { promptImageInput, convertImage } from '@/utils';
 
 export default {
   name: 'ReceiptEdit',
@@ -91,13 +91,8 @@ export default {
       ],
     };
   },
-  watch: {
-    '$route.params.dataURL': {
-      immediate: true,
-      handler(dataURL) {
-        this.receipt.file = dataURL;
-      },
-    },
+  created() {
+    if (this.$route.params.dataURL) this.receipt.file = this.$route.params.dataURL;
   },
   methods: {
     // onFakeItemInput() {
@@ -107,7 +102,8 @@ export default {
     //   this.newItem.label = null;
     // },
     async onEditClick() {
-      const dataURL = await promptImageInput();
+      let dataURL = await promptImageInput(false); // TODO: Allow cam input
+      dataURL = await convertImage(dataURL);
       this.receipt.file = dataURL;
     },
     onSaveClick() {

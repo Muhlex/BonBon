@@ -41,7 +41,7 @@ export default {
       ] });
     },
     addExampleReceipt() {
-      store.addReceipt({ vendor: 'Penny', overrideCost: 2580 });
+      store.addReceipt({ vendor: 'PENNY Markt', overrideCost: 2580 });
     },
     makeItemsFree() {
       store.receipts.forEach(receipt => receipt.items.forEach(item => {

@@ -20,7 +20,7 @@
 <script>
 import Button from 'primevue/button';
 import Icon from '@/components/Icon';
-import { promptImageInput } from '@/utils';
+import { promptImageInput, convertImage } from '@/utils';
 
 export default {
   name: 'AddReceiptFAB',
@@ -60,7 +60,8 @@ export default {
       this.$router.push({ name: 'ReceiptNew' });
     },
     async requestFile(camera) {
-      const dataURL = await promptImageInput(camera);
+      let dataURL = await promptImageInput(camera);
+      dataURL = await convertImage(dataURL);
       this.$router.push({ name: 'ReceiptNew', params: { dataURL } });
     },
   },

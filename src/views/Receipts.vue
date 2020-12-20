@@ -1,10 +1,11 @@
 <template>
   <ul>
     <li v-for="receipt in store.receipts" :key="receipt.id">
-      {{ receipt.vendor }}: {{ receipt.costInCurrency }}€
+      <b>{{ receipt.vendor }} [{{ receipt.costInCurrency }}€]</b>
+      <img :src="receipt.file" style="max-width: 150px;max-height: 150px;">
       <ul>
         <li v-for="item in receipt.items" :key="item.id">
-          {{ item.label }} ({{ item.costInCurrency }}€ [{{ item.cost }} in cents])
+          {{ item.label }} [{{ item.costInCurrency }}€]
         </li>
       </ul>
     </li>
