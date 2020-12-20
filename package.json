@@ -30,7 +30,9 @@
   "dependencies": {
     "core-js": "^3.6.5",
     "nanoid": "^3.1.20",
+    "primeicons": "^4.1.0",
     "primevue": "^3.0.2",
+    "svg-inline-loader": "^0.8.2",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-0"
   },

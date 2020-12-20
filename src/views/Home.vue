@@ -1,7 +1,4 @@
 <template>
-  <SingleReceiptEdit />
-  <hr>
-  <HelloWorld />
   <hr>
   <button @click="addExampleReceipts">
     Reactively insert example receipt data.
@@ -15,28 +12,18 @@
   <button @click="clearStore">
     Clear store.
   </button>
-  <ul>
-    <li v-for="receipt in store.receipts" :key="receipt.id">
-      {{ receipt.vendor }}: {{ receipt.costInCurrency }}€
-      <ul>
-        <li v-for="item in receipt.items" :key="item.id">
-          {{ item.label }} ({{ item.costInCurrency }}€ [{{ item.cost }} in cents])
-        </li>
-      </ul>
-    </li>
-  </ul>
+  <hr>
+  <Receipts />
 </template>
 
 <script>
-import HelloWorld from '../components/HelloWorld.vue';
-import SingleReceiptEdit from '../components/SingleReceiptEdit.vue';
-import store from '../store';
+import store from '@/store';
+import Receipts from '@/views/Receipts';
 
 export default {
   name: 'Home',
   components: {
-    HelloWorld,
-    SingleReceiptEdit,
+    Receipts,
   },
   data() {
     return {
@@ -54,11 +41,11 @@ export default {
       ] });
     },
     addExampleReceipt() {
-      store.addReceipt({ vendor: 'Penny', overrideCost: 2580 });
+      store.addReceipt({ vendor: 'PENNY Markt', overrideCost: 2580 });
     },
     makeItemsFree() {
       store.receipts.forEach(receipt => receipt.items.forEach(item => {
-        item.setCost(0);
+        item.cost = 0;
       }));
     },
     clearStore() {

@@ -1,11 +1,11 @@
 <template>
+  <transition name="pop">
+    <AddReceiptFAB v-if="displayFAB" />
+  </transition>
   <main>
     <nav>
       <router-link to="/">
-        Home
-      </router-link>
-      <router-link to="/about">
-        About
+        Receipts
       </router-link>
     </nav>
     <div>
@@ -15,8 +15,24 @@
 </template>
 
 <script>
+import AddReceiptFAB from '@/components/AddReceiptFAB';
+
 export default {
   name: 'App',
+  components: {
+    AddReceiptFAB,
+  },
+  data() {
+    return {
+      displayFAB: undefined,
+    };
+  },
+  watch: {
+    $route(to) {
+      if (to.fullPath.startsWith('/receipt')) this.displayFAB = false;
+      else this.displayFAB = true;
+    },
+  },
 };
 </script>
 
@@ -26,11 +42,23 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
-  margin-top: 60px;
-
-  main {
-    max-width: 1280px;
-    margin: 0 auto;
-  }
 }
+</style>
+
+<style lang="scss" scoped>
+main {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.pop-enter-active,
+.pop-leave-active {
+  transition: transform 300ms ease;
+}
+
+.pop-enter-from,
+.pop-leave-to {
+  transform: scale(0);
+}
+
 </style>
