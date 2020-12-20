@@ -15,6 +15,10 @@ export default class Receipt {
     }));
   }
 
+  set cost(value) {
+    this.overrideCost = value;
+  }
+
   get cost() {
     return computed(() => {
       // If a total is explicitly set for the receipt, use that. Otherwise use sum of all items.
@@ -23,25 +27,13 @@ export default class Receipt {
         : this.items.reduce((total, { cost }) => total + cost, 0) || 0;
     });
   }
+
   get costInCurrency() {
     return computed(() => (this.cost / 100).toFixed(2).replace('.', ','));
   }
 
   get budgetedItems() {
     return this.items.filter(item => item.budgeted);
-  }
-
-  setVendor(value) {
-    this.vendor = value;
-  }
-  setCost(value) {
-    this.overrideCost = value;
-  }
-  setTimestamp(value) {
-    this.timestamp = value || new Date();
-  }
-  setFile(value) {
-    this.file = value;
   }
 
   addItem(value) {
