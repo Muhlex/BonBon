@@ -2,7 +2,7 @@ export const promptImageInput = (camera = false) => {
   return new Promise((resolve, reject) => {
     const input = document.createElement('input');
     input.setAttribute('type', 'file');
-    input.setAttribute('accept', camera ? 'image/*' : 'image/*, application/pdf');
+    input.setAttribute('accept', 'image/*');
     if (camera) input.setAttribute('capture', 'camera');
     input.click();
 
