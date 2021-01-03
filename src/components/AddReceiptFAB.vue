@@ -3,17 +3,19 @@
     <Button class="p-button-rounded p-button-lg button-icon" @click="open = !open">
       <Icon name="add" />
     </Button>
-    <div v-if="open" class="menu">
-      <Button class="p-button-rounded button-icon p-button-outlined" @click="onCameraClick">
-        <Icon name="camera" />
-      </Button>
-      <Button class="p-button-rounded button-icon p-button-outlined" @click="onUploadClick">
-        <Icon name="image-add" />
-      </Button>
-      <Button class="p-button-rounded button-icon p-button-outlined" @click="onEmptyClick">
-        <Icon name="draft" />
-      </Button>
-    </div>
+    <transition name="shift-bottom">
+      <div v-if="open" class="menu">
+        <Button class="p-button-rounded button-icon p-button-outlined" @click="onCameraClick">
+          <Icon name="camera" />
+        </Button>
+        <Button class="p-button-rounded button-icon p-button-outlined" @click="onUploadClick">
+          <Icon name="image-add" />
+        </Button>
+        <Button class="p-button-rounded button-icon p-button-outlined" @click="onEmptyClick">
+          <Icon name="draft" />
+        </Button>
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -88,6 +90,7 @@ export default {
 
 .menu {
   position: absolute;
+  z-index: -1;
   bottom: calc(100% + 0.5em);
   right: 0;
   width: 100%;
@@ -98,5 +101,36 @@ export default {
   > button + button {
     margin-bottom: 0.5em;
   }
+}
+
+.shift-bottom-enter-active,
+.shift-bottom-leave-active {
+  transition: opacity 300ms ease;
+}
+.shift-bottom-enter-active {
+  > button { transition: transform ease-out; }
+}
+.shift-bottom-leave-active {
+  > button { transition: transform ease-in; }
+}
+.shift-bottom-enter-active {
+  @for $i from 0 through 2 {
+    > button:nth-child(#{3 - $i}) {
+      transition-duration: 100ms * ($i + 1);
+    }
+  }
+}
+.shift-bottom-leave-active {
+  @for $i from 0 through 2 {
+    > button:nth-child(#{$i + 1}) {
+      transition-delay: 25ms * $i;
+      transition-duration: 100ms * ($i + 1);
+    }
+  }
+}
+.shift-bottom-enter-from,
+.shift-bottom-leave-to {
+  opacity: 0;
+  > button { transform: translateY(100%); }
 }
 </style>
