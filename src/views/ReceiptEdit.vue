@@ -8,15 +8,15 @@
     </Button>
   </div>
 
+  <div style="margin-top:0.5em">
+    Date
+    <Calendar v-model="receipt.timestamp" date-format="dd.mm.yy" />
+  </div>
   <div style="margin-top:1em">
     Vendor
     <AutoComplete v-model="receipt.vendor" dropdown :suggestions="suggestedVendors"
                   @complete="$event => suggestedVendors = exampleVendors.filter(v => v.toLowerCase().includes($event.query.toLowerCase()))"
     />
-  </div>
-  <div style="margin-top:0.5em">
-    Date
-    <Calendar v-model="receipt.timestamp" date-format="dd.mm.yy" />
   </div>
 
   <!-- Consider https://primefaces.org/primevue/showcase/#/datatable for displaying this data. -->
@@ -30,19 +30,13 @@
   </div>
   <div v-for="item in receipt.items" :key="item.id" class="p-fluid p-field row">
     <InputText :id="`item-label-${item.id}`" v-model="item.label" />
-    <InputText :id="`item-cost-${item.id}`" v-model.number="item.cost" />
-    <!-- <InputNumber :id="`item-cost-${item.id}`" v-model="inputCosts[index]"
+    <InputNumber :id="`item-cost-${item.id}`" v-model="item.floatCost"
                  mode="currency" currency="EUR"
-    /> -->
+    />
   </div>
   <Button @click="receipt.addItem()">
     Add Item
   </Button>
-  <!-- Empty fake items which add a new item when used. -->
-  <!-- <div class="p-fluid p-field row">
-    <InputText v-model="newItem.label" @input="onFakeItemInput" />
-    <InputText v-model="newItem.cost" @input="onFakeItemInput" />
-  </div> -->
   <div>
     <b>Total: {{ receipt.costInCurrency }} €</b>
   </div>
@@ -56,7 +50,7 @@ import Button from 'primevue/button';
 import AutoComplete from 'primevue/autocomplete';
 import Calendar from 'primevue/calendar';
 import InputText from 'primevue/inputtext';
-//import InputNumber from 'primevue/inputnumber';
+import InputNumber from 'primevue/inputnumber';
 
 import store from '@/store';
 import Receipt from '@/store/Receipt';
@@ -69,7 +63,7 @@ export default {
     AutoComplete,
     Calendar,
     InputText,
-    //InputNumber,
+    InputNumber,
   },
   data() {
     return {
@@ -95,12 +89,6 @@ export default {
     if (this.$route.params.dataURL) this.receipt.file = this.$route.params.dataURL;
   },
   methods: {
-    // onFakeItemInput() {
-    //   const { label, cost } = this.newItem;
-    //   if (label || cost) this.receipt.addItem({ label, cost: Number(cost) || undefined });
-    //   this.newItem.cost = null;
-    //   this.newItem.label = null;
-    // },
     async onEditClick() {
       let dataURL = await promptImageInput(false); // TODO: Allow cam input
       dataURL = await convertImage(dataURL);
@@ -108,7 +96,7 @@ export default {
     },
     onSaveClick() {
       store.addReceipt(this.receipt);
-      this.$router.push({ path: '/' });
+      this.$router.back();
     },
   },
 };
@@ -133,7 +121,7 @@ export default {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(black, 0.5);
+    background-color: rgba(black, 0.33);
     z-index: 1;
   }
 }

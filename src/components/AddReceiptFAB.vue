@@ -71,10 +71,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
 .fab {
-  position: fixed;
-  bottom: 16px;
-  right: 16px;
+  position: relative;
 
   // Due to using our own icons we need to override the padding a text button would receive
   ::v-deep(.button-icon) {
@@ -108,14 +107,9 @@ export default {
   transition: opacity 300ms ease;
 }
 .shift-bottom-enter-active {
-  > button { transition: transform ease-out; }
-}
-.shift-bottom-leave-active {
-  > button { transition: transform ease-in; }
-}
-.shift-bottom-enter-active {
   @for $i from 0 through 2 {
     > button:nth-child(#{3 - $i}) {
+      transition: transform ease-out;
       transition-duration: 100ms * ($i + 1);
     }
   }
@@ -123,8 +117,9 @@ export default {
 .shift-bottom-leave-active {
   @for $i from 0 through 2 {
     > button:nth-child(#{$i + 1}) {
-      transition-delay: 25ms * $i;
-      transition-duration: 100ms * ($i + 1);
+      transition: transform ease-in;
+      transition-delay: 50ms * $i;
+      transition-duration: 150ms;
     }
   }
 }
