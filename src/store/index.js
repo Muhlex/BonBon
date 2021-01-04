@@ -38,6 +38,10 @@ class Store {
   get receipts() { return this._state.receipts; }
   set receipts(value) { this._state.receipts = value; }
 
+  getReceiptsSortedByDate() {
+    return this.receipts.sort((a, b) => a.timestamp - b.timestamp);
+  }
+
   getBudgetedInRange(from, to = new Date()) {
     // Retrieve all items marked to appear in budget book in a specific time period.
     const receipts = this.receipts.filter(({ timestamp }) => timestamp > from && timestamp < to);

@@ -1,12 +1,13 @@
 import { reactive, computed } from 'vue';
 import { nanoid } from 'nanoid';
+import dateFormat from 'dateformat';
 import Item from './Item.js';
 
 export default class Receipt {
   constructor({ timestamp, vendor, overrideCost, file, items } = {}) {
     this._state = reactive({
       id: nanoid(),
-      timestamp: timestamp || new Date(), // TODO: Stringify this
+      timestamp: timestamp || Date.now(),
       vendor,
       overrideCost, // In a perfect world, the total is the sum of all items. Otherwise it's this.
       file,
@@ -34,6 +35,17 @@ export default class Receipt {
       },
       set: value => this.overrideCost = parseInt(value, 10),
     });
+  }
+
+  get date() {
+    return new Date(this.timestamp);
+  }
+  set date(value) {
+    this.timestamp = value.toISOString();
+  }
+
+  get dateString() {
+    return dateFormat(this.date, 'd.m.yyyy');
   }
 
   get costInCurrency() {

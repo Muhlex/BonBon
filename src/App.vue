@@ -3,7 +3,12 @@
     <router-view />
   </main>
   <div class="bottom">
-    <div class="fab-container">
+    <div class="fab-container" :class="{ 'fab-show-tutorial': showFABTutorial }">
+      <transition name="slide-in-right">
+        <div v-if="showFABTutorial" class="tutorial">
+          Add a purchase from anywhere with this button
+        </div>
+      </transition>
       <transition name="pop">
         <AddReceiptFAB v-if="displayFAB" />
       </transition>
@@ -22,16 +27,14 @@ export default {
     AppBar,
     AddReceiptFAB,
   },
-  data() {
-    return {
-      displayFAB: undefined,
-    };
-  },
-  watch: {
-    $route(to) {
-      const path = to.fullPath;
-      if (path.startsWith('/receipts') && path.length > 10) this.displayFAB = false;
-      else this.displayFAB = true;
+  computed: {
+    displayFAB() {
+      const path = this.$route.fullPath;
+      const match = '/receipts';
+      return !(path.startsWith(match) && path.length > match.length);
+    },
+    showFABTutorial() {
+      return this.$route.fullPath === '/';
     },
   },
 };
@@ -40,7 +43,7 @@ export default {
 <style lang="scss">
 body {
   margin: 0;
-  padding-bottom: 64px;
+  padding-bottom: 96px;
 }
 
 #app {
@@ -67,12 +70,13 @@ main {
   width: 100%;
   max-width: 1280px;
   margin: 0 auto;
-  padding: 8px;
+  padding: 0 8px;
 }
 
 .bottom {
   position: fixed;
   bottom: 0;
+  left: 0;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -81,7 +85,22 @@ main {
   > * { pointer-events: all; }
 
   .fab-container {
-    padding: 0 12px 12px 0;
+    padding: 0 12px 16px 0;
+  }
+
+  .fab-show-tutorial {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px;
+    background-color: var(--surface-c);
+    border-radius: 99999px;
+    margin: 0 4px 8px;
+    width: calc(100% - 4px * 2);
+
+    .tutorial {
+      padding: 0.25em 1em;
+    }
   }
 }
 
@@ -93,6 +112,16 @@ main {
 .pop-enter-from,
 .pop-leave-to {
   transform: scale(0);
+}
+
+.slide-in-right-enter-active {
+  transition: 300ms ease;
+  transition-property: opacity, transform;
+}
+
+.slide-in-right-enter-from {
+  opacity: 0;
+  transform: translateX(64px);
 }
 
 </style>

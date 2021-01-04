@@ -79,8 +79,10 @@ export default {
   ::v-deep(.button-icon) {
     padding: 0.625rem;
   }
-  ::v-deep(.p-button-outlined) {
-    background-color: white;
+  ::v-deep(.p-button.p-button-outlined:enabled) {
+    background-color: var(--surface-a);
+    background-image: linear-gradient(rgba(white, 0.96), rgba(white, 0.96));
+    &:hover { background-color: var(--primary-color); }
   }
 
   > button i { transition: transform 300ms ease }

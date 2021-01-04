@@ -10,7 +10,7 @@
 
   <div style="margin-top:0.5em">
     Date
-    <Calendar v-model="receipt.timestamp" date-format="dd.mm.yy" />
+    <Calendar v-model="receipt.date" date-format="dd.mm.yy" />
   </div>
   <div style="margin-top:1em">
     Vendor
