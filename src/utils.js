@@ -4,9 +4,13 @@ export const promptImageInput = (camera = false) => {
     input.setAttribute('type', 'file');
     input.setAttribute('accept', 'image/*');
     if (camera) input.setAttribute('capture', 'camera');
+    // INFO iOS Iphone: input has to be Part of Dom. If not Changeevent isn#t triggered 
+    input.style.display = 'none';
+    document.body.appendChild(input);
+    // INFO END  
     input.click();
-
     input.onchange = ({ target: { files } }) => {
+      document.body.removeChild(input);
       const reader = new FileReader();
       reader.onload = () => {
         resolve(reader.result);
