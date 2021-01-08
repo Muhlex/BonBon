@@ -43,7 +43,7 @@ export default {
         {
           to: '/settings',
           text: 'Settings',
-          iconName: 'settings',
+          iconName: 'user-settings',
         },
       ],
     };
