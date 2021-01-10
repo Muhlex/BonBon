@@ -34,7 +34,7 @@
                  mode="currency" currency="EUR"
     />
   </div>
-  <Button @click="receipt.addItem()">
+  <Button @click="addItem">
     Add Item
   </Button>
   <div>
@@ -89,6 +89,9 @@ export default {
     if (this.$route.params.dataURL) this.receipt.file = this.$route.params.dataURL;
   },
   methods: {
+    addItem() {
+      this.receipt.addItem();
+    },
     async onEditClick() {
       let dataURL = await promptImageInput(false); // TODO: Allow cam input
       dataURL = await convertImage(dataURL);

@@ -1,45 +1,58 @@
-import { reactive, watch } from 'vue';
-import { cloneDeep } from 'lodash';
+import { reactive, readonly } from 'vue';
+import firebase, { auth, userDoc } from '@/firebase';
 import Receipt from './Receipt.js';
 
 class Store {
-  constructor({ receipts } = {}) {
+  constructor() {
     this._state = reactive({
-      // Check if passed receipts are all instances of Receipt. Otherwise call the constructor.
-      receipts: receipts ? receipts.map(r => (r instanceof Receipt) ? r : new Receipt(r)) : [],
+      receipts: [],
+      user: null,
+      authInitialized: false,
     });
+    // Return a read-only proxy to make sure store data is only changed via firebase
+    this.state = readonly(this._state);
+  }
 
-    // Watch for any state changes and save them locally (this could send them to a server one day)
-    watch(this._state, (newValue) => {
-      // Flatten the store to remove state objects.
-      // E. g. Store._state.Receipt._state.Item._state becomes Store.Receipt.Item
-      const flattenState = obj => {
-        for (const key in obj) {
-          // If there is another object, recursively do the same one level deeper.
-          if (typeof obj[key] == 'object' && obj[key] !== null) {
-            flattenState(obj[key]);
-          }
+  get user() { return this.state.user; }
+  get receipts() { return this.state.receipts; }
+  get authInitialized() { return this.state.authInitialized; }
 
-          // If '_state' is found, copy it's properties one level up and delete it.
-          if (key === '_state') {
-            obj = Object.setPrototypeOf(obj, Object); // apparently this is slow
-            Object.assign(obj, obj[key]);
-            delete obj[key];
-          }
-        }
-      };
+  signIn() {
+    if (this.user) return;
+    this._state.authInitialized = false;
+    auth.signInWithRedirect(new firebase.auth.GoogleAuthProvider());
+  }
 
-      const persistState = cloneDeep(newValue);
-      flattenState(persistState);
-      localStorage.setItem('bonbon.data', JSON.stringify(persistState)); // TODO: Use Firebase
+  signOut() {
+    if (!this.user) return;
+    return auth.signOut();
+  }
+
+  updateUser(value) {
+    this._state.authInitialized = true;
+    this._state.user = value;
+  }
+
+  updateReceipts(receipts) {
+    this._state.receipts = receipts.map(receipt => {
+      return receipt instanceof Receipt ? receipt : new Receipt(receipt);
     });
   }
 
-  get receipts() { return this._state.receipts; }
-  set receipts(value) { this._state.receipts = value; }
+  addReceipt(obj) {
+    // Flatten state first
+    const addObj = obj._state || obj;
+    if (addObj.items) addObj.items = addObj.items.map(item => item._state || item);
+    userDoc.collection('receipts').add(addObj);
+  }
+
+  deleteReceipt(id) {
+    userDoc.collection('receipts').doc(id).delete();
+  }
 
   getReceiptsSortedByDate() {
-    return this.receipts.sort((a, b) => a.timestamp - b.timestamp);
+    const copy = this._state.receipts;
+    return copy.sort((a, b) => a.timestamp - b.timestamp);
   }
 
   getBudgetedInRange(from, to = new Date()) {
@@ -47,18 +60,6 @@ class Store {
     const receipts = this.receipts.filter(({ timestamp }) => timestamp > from && timestamp < to);
     return receipts.map(({ timestamp, budgetBookItems }) => ({ timestamp, items: budgetBookItems }));
   }
-
-  addReceipt(value) {
-    // If a Receipt is passed, push it directly. Otherwise create one with the passed values.
-    this.receipts.push((value instanceof Receipt) ? value : new Receipt(value));
-  }
-
-  clear() {
-    this.receipts.splice(0);
-  }
 }
 
-const state = JSON.parse(localStorage.getItem('bonbon.data')); // TODO: Use Firebase
-const store = state ? new Store(state) : new Store();
-
-export default store;
+export default new Store();

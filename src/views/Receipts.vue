@@ -1,19 +1,16 @@
 <template>
   <button @click="addExampleReceipts">
-    Reactively insert example receipt data.
+    Add example receipts
   </button>
   <button @click="addExampleReceipt">
-    Another one.
-  </button>
-  <button @click="makeItemsFree">
-    Make all items free.
-  </button>
-  <button @click="clearStore">
-    Clear store.
+    Add single example receipt
   </button>
   <ul>
     <li v-for="receipt in store.receipts" :key="receipt.id">
       <b>{{ receipt.vendor }} [{{ receipt.costInCurrency }}€]</b>
+      <button @click="store.deleteReceipt(receipt.id)">
+        X
+      </button>
       <img :src="receipt.file" style="max-width: 150px;max-height: 150px;">
       <ul>
         <li v-for="item in receipt.items" :key="item.id">
@@ -36,7 +33,7 @@ export default {
   },
   methods: {
     addExampleReceipts() {
-      store.addReceipt({ vendor: 'Edeka', overrideCost: 1499 });
+      store.addReceipt({ vendor: 'Edeka', costOverride: 1499 });
 
       store.addReceipt({ vendor: 'REWE', items: [
         { label: 'Zahnpasta', cost: 149 },
@@ -45,15 +42,7 @@ export default {
       ] });
     },
     addExampleReceipt() {
-      store.addReceipt({ vendor: 'PENNY Markt', overrideCost: 2580 });
-    },
-    makeItemsFree() {
-      store.receipts.forEach(receipt => receipt.items.forEach(item => {
-        item.cost = 0;
-      }));
-    },
-    clearStore() {
-      store.clear();
+      store.addReceipt({ vendor: 'PENNY Markt', costOverride: 2580 });
     },
   },
 };

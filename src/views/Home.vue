@@ -44,7 +44,7 @@ export default {
   },
   computed: {
     recentReceipts() {
-      return store.getReceiptsSortedByDate().slice(-5);
+      return store.getReceiptsSortedByDate().slice(-5).reverse();
     },
   },
 };
