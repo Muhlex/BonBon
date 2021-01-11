@@ -1,5 +1,5 @@
 <template>
-  <main v-if="!store.authInitialized" class="loading">
+  <main v-if="!store || !store.authInitialized" class="loading">
     <ProgressSpinner />
   </main>
   <template v-else>
@@ -81,7 +81,7 @@ h1, h2, h3, h4, h5, h6 {
 <style lang="scss" scoped>
 main {
   width: 100%;
-  max-width: 1280px;
+  max-width: 1024px;
   margin: 0 auto;
   padding: 0 8px;
   padding-bottom: 96px;
@@ -110,6 +110,10 @@ main {
     padding: 0 12px 16px 0;
   }
 
+  .tutorial {
+    display: none; // Fix for showFABTutorial updating a frame after route change
+  }
+
   .fab-show-tutorial {
     display: flex;
     align-items: center;
@@ -121,6 +125,7 @@ main {
     width: calc(100% - 4px * 2);
 
     .tutorial {
+      display: block;
       padding: 0.25em 1em;
     }
   }

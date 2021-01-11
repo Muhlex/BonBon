@@ -1,6 +1,8 @@
-import { reactive, readonly } from 'vue';
+import { reactive, readonly, computed } from 'vue';
 import firebase, { auth, userDoc } from '@/firebase';
 import Receipt from './Receipt.js';
+
+import dummyData from './dummyData';
 
 class Store {
   constructor() {
@@ -8,13 +10,17 @@ class Store {
       receipts: [],
       user: null,
       authInitialized: false,
+
+      dummyReceipts: dummyData.receipts.map(r => new Receipt(r)),
     });
     // Return a read-only proxy to make sure store data is only changed via firebase
     this.state = readonly(this._state);
   }
 
   get user() { return this.state.user; }
-  get receipts() { return this.state.receipts; }
+  get receipts() {
+    return [...this._state.receipts, ...this._state.dummyReceipts];
+  }
   get authInitialized() { return this.state.authInitialized; }
 
   signIn() {
@@ -51,8 +57,8 @@ class Store {
   }
 
   getReceiptsSortedByDate() {
-    const copy = this._state.receipts;
-    return copy.sort((a, b) => a.timestamp - b.timestamp);
+    const copy = [...this.receipts];
+    return computed(() => copy.sort((a, b) => a.date - b.date));
   }
 
   getBudgetedInRange(from, to = new Date()) {

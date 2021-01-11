@@ -33,6 +33,7 @@
     <InputNumber :id="`item-cost-${item.id}`" v-model="item.floatCost"
                  mode="currency" currency="EUR"
     />
+    <input v-model="item.budgeted" type="checkbox"> {{ item.budgeted }}
   </div>
   <Button @click="addItem">
     Add Item

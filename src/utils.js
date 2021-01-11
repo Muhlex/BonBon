@@ -4,10 +4,10 @@ export const promptImageInput = (camera = false) => {
     input.setAttribute('type', 'file');
     input.setAttribute('accept', 'image/*');
     if (camera) input.setAttribute('capture', 'camera');
-    // INFO iOS Iphone: input has to be Part of Dom. If not Changeevent isn#t triggered 
+    // INFO iOS Iphone: input has to be Part of Dom. If not Changeevent isn#t triggered
     input.style.display = 'none';
     document.body.appendChild(input);
-    // INFO END  
+    // INFO END
     input.click();
     input.onchange = ({ target: { files } }) => {
       document.body.removeChild(input);
@@ -22,7 +22,7 @@ export const promptImageInput = (camera = false) => {
   });
 };
 
-export const convertImage = (src, maxSize = 800, format = 'jpeg', quality = 0.9) => {
+export const convertImage = (src, maxSize = 1200, format = 'jpeg', quality = 0.85) => {
   return new Promise((resolve) => {
     const canvas = document.createElement('canvas');
     const img = new Image();

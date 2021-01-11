@@ -17,13 +17,19 @@ export default class Receipt {
 
   get id() { return this._state.id; }
 
-  get timestamp() { return this._state.timestamp; }
+  get timestamp() {
+    return this._state.timestamp;
+  }
   set timestamp(value) {
     this._state.timestamp = value instanceof Date ? value.toISOString() : value;
   }
 
-  get date() { return computed(() => new Date(this.timestamp)); }
-  set date(value) { this.timestamp = value.toISOString(); }
+  get date() {
+    return computed({
+      get: () => new Date(this.timestamp),
+      set: value => this.timestamp = value.toISOString(),
+    });
+  }
 
   get dateString() { return computed(() => dateFormat(this.date, 'dd.mm.yyyy')); }
 
