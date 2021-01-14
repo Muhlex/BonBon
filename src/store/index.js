@@ -82,8 +82,8 @@ class Store {
 
   getBudgetedInRange(from, to = new Date()) {
     // Retrieve all items marked to appear in budget book in a specific time period.
-    const receipts = this.receipts.filter(({ timestamp }) => timestamp > from && timestamp < to);
-    return receipts.map(({ timestamp, budgetBookItems }) => ({ timestamp, items: budgetBookItems }));
+    const receipts = this.receipts.filter(({ date }) => date > from && date < to);
+    return receipts.map(({ date, budgetBookItems }) => ({ date, items: budgetBookItems }));
   }
 }
 

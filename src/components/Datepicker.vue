@@ -37,12 +37,15 @@
         @date-select="setSelection($event)"
       /> 
     </div>
-    <div class="submit-container">
+    <div
+      v-if="showSubmit"
+      class="submit-container"
+    >
       <Button 
         class="submit-button"
         @click="submitSelection"
       >
-        Submit Selection
+        Apply Filter
       </Button>
     </div>
   </div>
@@ -60,37 +63,42 @@ export default {
     Button,
     RadioButton,
   },
+  props: {
+    showSubmit: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  emits: [
+    'submit',
+  ],
   data() {
     return {
       date: null,
       selectionMode: 'single',
-      selecttion: [],
+      selection: [],
     };
-  },
-  mounted() {
-    console.log(this.$refs.calendar);
   },
   methods: {
     setSelectionMode(modeState, event) {
       this.$refs.calendar.onClearButtonClick(event);
       this.selectionMode = modeState;
     },
-    setSelection(output) {
-      //convert Output
-      // let output = outputString.split(' ');
-      console.log({output});
-
+    setSelection(date) {
       switch(this.selectionMode) {
-        case 'single': 
+        case 'single':
+          this.selection[0] = date;
           break;
         case 'range':
+          if(this.selection.length === 1) date.setHours(23, 59, 59, 999);
+          if(this.selection.length === 2) this.selection = [];
+          this.selection.push(date);
           break;
       }
     },
-    getSelection(event) {
-    },
     submitSelection(event) {
-      console.log('submit', event);
+      this.$emit('submit', this.selection);
+      this.$refs.calendar.onClearButtonClick(event);
     },
   },
 };
