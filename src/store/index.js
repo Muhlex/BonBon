@@ -45,15 +45,27 @@ class Store {
     });
   }
 
-  addReceipt(obj) {
+  _flattenReceipt(r) {
+    const flatR = r._state || r;
+    if (flatR.items) flatR.items = flatR.items.map(item => item._state || item);
+    return flatR;
+  }
+
+  addReceipt(r) {
     // Flatten state first
-    const addObj = obj._state || obj;
-    if (addObj.items) addObj.items = addObj.items.map(item => item._state || item);
-    userDoc.collection('receipts').add(addObj);
+    userDoc.collection('receipts').add(this._flattenReceipt(r));
+  }
+
+  updateReceipt(r) {
+    userDoc.collection('receipts').doc(r.id).update(this._flattenReceipt(r));
   }
 
   deleteReceipt(id) {
     userDoc.collection('receipts').doc(id).delete();
+  }
+
+  getReceiptById(id) {
+    return this.receipts.find(receipt => receipt.id === id);
   }
 
   getReceiptsSortedByDate() {

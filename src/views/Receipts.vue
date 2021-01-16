@@ -11,6 +11,9 @@
       <button @click="store.deleteReceipt(receipt.id)">
         X
       </button>
+      <button @click="() => onEditClick(receipt.id)">
+        ✏
+      </button>
       <img :src="receipt.file" style="max-width: 150px;max-height: 150px;">
       <ul>
         <li v-for="item in receipt.items" :key="item.id">
@@ -43,6 +46,9 @@ export default {
     },
     addExampleReceipt() {
       store.addReceipt({ vendor: 'PENNY Markt', costOverride: 2580 });
+    },
+    onEditClick(receiptID) {
+      this.$router.push(`/receipts/${receiptID}/edit`);
     },
   },
 };

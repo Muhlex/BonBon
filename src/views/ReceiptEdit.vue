@@ -87,7 +87,8 @@ export default {
     };
   },
   created() {
-    if (this.$route.params.dataURL) this.receipt.file = this.$route.params.dataURL;
+    if (this.$route.params.id) this.receipt = store.getReceiptById(this.$route.params.id);
+    else if (this.$route.params.dataURL) this.receipt.file = this.$route.params.dataURL;
   },
   methods: {
     addItem() {
@@ -99,7 +100,8 @@ export default {
       this.receipt.file = dataURL;
     },
     onSaveClick() {
-      store.addReceipt(this.receipt);
+      if (this.receipt.id) store.updateReceipt(this.receipt);
+      else store.addReceipt(this.receipt);
       this.$router.back();
     },
   },
