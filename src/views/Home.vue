@@ -44,7 +44,7 @@ export default {
   },
   computed: {
     recentReceipts() {
-      return store.getReceiptsSortedByDate().value.slice(-5).reverse();
+      return store.getReceiptsSortedByDate().value.slice(-3).reverse();
     },
   },
 };
@@ -54,7 +54,6 @@ export default {
 .header {
   text-align: center;
   margin-bottom: 2em;
-  margin-top: 8px;
   padding: 1em;
   background-color: var(--surface-b);
   border-radius: 3px;

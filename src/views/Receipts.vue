@@ -9,11 +9,15 @@
     <li v-for="receipt in store.receipts" :key="receipt.id">
       <b>{{ receipt.vendor }} [{{ receipt.costInCurrency }}€]</b>
       <button @click="store.deleteReceipt(receipt.id)">
-        X
+        ❌
+      </button>
+      <button @click="() => onViewClick(receipt.id)">
+        👀
       </button>
       <button @click="() => onEditClick(receipt.id)">
-        ✏
+        📝
       </button>
+      <br>
       <img :src="receipt.file" style="max-width: 150px;max-height: 150px;">
       <ul>
         <li v-for="item in receipt.items" :key="item.id">
@@ -46,6 +50,9 @@ export default {
     },
     addExampleReceipt() {
       store.addReceipt({ vendor: 'PENNY Markt', costOverride: 2580 });
+    },
+    onViewClick(receiptID) {
+      this.$router.push(`/receipts/${receiptID}`);
     },
     onEditClick(receiptID) {
       this.$router.push(`/receipts/${receiptID}/edit`);

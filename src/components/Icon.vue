@@ -2,6 +2,7 @@
   <!-- eslint-disable vue/no-v-html -->
   <i
     :style="{ width: size, height: size, color: fill }"
+    :aria-label="alt"
     v-html="require(`!!svg-inline-loader!@/assets/icons/${name}.svg`)"
   />
 </template>
@@ -19,6 +20,10 @@ export default {
       default: '1.5em',
     },
     fill: {
+      type: String,
+      default: undefined,
+    },
+    alt: {
       type: String,
       default: undefined,
     },

@@ -10,6 +10,7 @@ class Store {
       receipts: [],
       user: null,
       authInitialized: false,
+      dataInitialized: false,
 
       dummyReceipts: dummyData.receipts.map(r => new Receipt(r)),
     });
@@ -22,6 +23,11 @@ class Store {
     return [...this._state.receipts, ...this._state.dummyReceipts];
   }
   get authInitialized() { return this.state.authInitialized; }
+  get dataInitialized() { return this.state.dataInitialized; }
+
+  get knownVendors() {
+    return computed(() => new Set(this.receipts.filter(r => r.vendor).map(r => r.vendor))).value;
+  }
 
   signIn() {
     if (this.user) return;
@@ -35,14 +41,15 @@ class Store {
   }
 
   updateUser(value) {
-    this._state.authInitialized = true;
     this._state.user = value;
+    this._state.authInitialized = true;
   }
 
   updateReceipts(receipts) {
     this._state.receipts = receipts.map(receipt => {
       return receipt instanceof Receipt ? receipt : new Receipt(receipt);
     });
+    this._state.dataInitialized = true;
   }
 
   _flattenReceipt(r) {

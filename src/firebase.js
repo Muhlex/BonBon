@@ -25,6 +25,7 @@ auth.onAuthStateChanged(user => {
   let unsubscribe;
 
   if (user) {
+    if (router.currentRoute.value.name === 'SignIn') router.push('/');
     userDoc = db.collection('users').doc(user.uid);
     // Create a user record if it doesn't exist
     userDoc.set({}, { merge: true });
@@ -34,7 +35,6 @@ auth.onAuthStateChanged(user => {
         return { ...doc.data(), id: doc.id };
       }));
     });
-    router.push('/');
   } else {
     // Unsubscribe to user's state changes on sign out
     unsubscribe && unsubscribe();
