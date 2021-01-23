@@ -54,8 +54,11 @@
     <Column 
       field="interaction"
     >
-      <template #body>
-        <Button class="filter-button">
+      <template #body="slotProps">
+        <Button
+          class="filter-button"
+          @click="() => onEditClick(slotProps.data.id)"
+        >
           <Icon name="edit" />
         </Button>
       </template>
