@@ -10,6 +10,7 @@ class Store {
       receipts: [],
       user: null,
       authInitialized: false,
+      dataInitialized: false,
 
       dummyReceipts: dummyData.receipts.map(r => new Receipt(r)),
     });
@@ -22,6 +23,11 @@ class Store {
     return [...this._state.receipts, ...this._state.dummyReceipts];
   }
   get authInitialized() { return this.state.authInitialized; }
+  get dataInitialized() { return this.state.dataInitialized; }
+
+  get knownVendors() {
+    return computed(() => new Set(this.receipts.filter(r => r.vendor).map(r => r.vendor))).value;
+  }
 
   signIn() {
     if (this.user) return;
@@ -35,25 +41,38 @@ class Store {
   }
 
   updateUser(value) {
-    this._state.authInitialized = true;
     this._state.user = value;
+    this._state.authInitialized = true;
   }
 
   updateReceipts(receipts) {
     this._state.receipts = receipts.map(receipt => {
       return receipt instanceof Receipt ? receipt : new Receipt(receipt);
     });
+    this._state.dataInitialized = true;
   }
 
-  addReceipt(obj) {
+  _flattenReceipt(r) {
+    const flatR = r._state || r;
+    if (flatR.items) flatR.items = flatR.items.map(item => item._state || item);
+    return flatR;
+  }
+
+  addReceipt(r) {
     // Flatten state first
-    const addObj = obj._state || obj;
-    if (addObj.items) addObj.items = addObj.items.map(item => item._state || item);
-    userDoc.collection('receipts').add(addObj);
+    userDoc.collection('receipts').add(this._flattenReceipt(r));
+  }
+
+  updateReceipt(r) {
+    userDoc.collection('receipts').doc(r.id).update(this._flattenReceipt(r));
   }
 
   deleteReceipt(id) {
     userDoc.collection('receipts').doc(id).delete();
+  }
+
+  getReceiptById(id) {
+    return this.receipts.find(receipt => receipt.id === id);
   }
 
   getReceiptsSortedByDate() {

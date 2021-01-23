@@ -50,11 +50,16 @@ export default class Receipt {
     return computed({
       get: () => {
         // If a total is explicitly set for the receipt, use that. Otherwise use sum of all items.
-        return (typeof this._state.costOverride === 'number')
-          ? this._state.costOverride
-          : this._state.items.reduce((total, { cost }) => total + cost, 0) || 0;
+        return this.hasUnknownItems ? this._state.costOverride : this.itemCost;
       },
       set: value => this._state.costOverride = parseInt(value, 10),
+    });
+  }
+
+  get floatCost() {
+    return computed({
+      get: () => (this.cost / 100),
+      set: value => this._state.costOverride = parseInt(value * 100, 10),
     });
   }
 
@@ -62,11 +67,33 @@ export default class Receipt {
     return computed(() => (this.cost / 100).toFixed(2).replace('.', ','));
   }
 
+  get itemCost() {
+    return computed(() => this._state.items.reduce((total, { cost }) => total + cost, 0) || 0);
+  }
+
+  get hasUnknownItems() {
+    return computed(() => (typeof this._state.costOverride === 'number'));
+  }
+
+  get unknownItemsCostInCurrency() {
+    const itemCost = this._state.items.reduce((total, { cost }) => total + cost, 0) || 0;
+    return computed(() => ((this._state.costOverride - itemCost) / 100).toFixed(2).replace('.', ','));
+  }
+
   get budgetedItems() {
     return computed(() => this.items.filter(item => item.budgeted));
   }
 
+  resetCostOverride() {
+    this._state.costOverride = null;
+  }
+
   addItem(value = {}) {
     this._state.items.push((value instanceof Item) ? value : new Item(value));
+  }
+
+  deleteItem(id) {
+    const index = this._state.items.findIndex(item => item.id === id);
+    this._state.items.splice(index, 1);
   }
 }

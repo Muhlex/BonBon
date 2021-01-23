@@ -1,55 +1,94 @@
 <template>
-  <div
-    class="receipt-image"
-    :style="{ 'background-image': `url(${receipt.file})` }"
-  >
-    <Button class="p-button-sm" style="position:absolute;bottom:8px;right:8px;z-index:2" @click="onEditClick">
-      Edit receipt image
+  <!-- eslint-disable vue/attribute-hyphenation -->
+  <div class="fixed-content">
+    <div class="input-group">
+      <label for="receipt-edit-date">Date of purchase</label>
+      <Calendar id="receipt-edit-date" v-model="receipt.date" date-format="dd.mm.yy" />
+    </div>
+    <div class="input-group">
+      <label for="receipt-edit-vendor">Vendor</label>
+      <AutoComplete id="receipt-edit-vendor" v-model="receipt.vendor" dropdown :suggestions="suggestedVendors"
+                    @complete="onVendorInput"
+      />
+    </div>
+    <template v-if="receipt.file">
+      <PanZoomImage
+        class="receipt-image-container"
+        :src="receipt.file"
+      />
+      <Button class="icon-button" @click="onFileEdit">
+        <Icon name="edit" alt="Edit Image" />
+      </Button>
+    </template>
+    <button v-else class="receipt-image-container receipt-no-image" @click="onFileEdit">
+      <Icon name="image-add" alt="Add image file" fill="white" size="2em" />
+    </button>
+  </div>
+
+  <div class="static-content">
+    <DataTable
+      :value="tableItems"
+      class="p-datatable-sm p-datatable-striped"
+    >
+      <Column headerStyle="width: 58px;">
+        <template #body="item">
+          <Button class="icon-button p-button-secondary p-button-outlined" @click="onItemDeleteClick(item.data.id)">
+            <Icon name="delete" alt="Delete Product" />
+          </Button>
+        </template>
+      </Column>
+      <Column
+        header="Product"
+      >
+        <template #body="item">
+          <span v-if="item.data.unknown" class="unknown-item">{{ item.data.label }}</span>
+          <InputText v-else v-model="item.data.label" />
+        </template>
+      </Column>
+      <Column
+        header="Price"
+        headerStyle="width: 40%;"
+      >
+        <template #body="item">
+          <span v-if="item.data.unknown">{{ item.data.costInCurrency }} €</span>
+          <InputNumber v-else v-model="item.data.floatCost" mode="currency" currency="EUR" />
+        </template>
+      </Column>
+      <template #footer>
+        <Button style="padding-left: 0.5rem; margin: 0.5rem" @click="onAddItem">
+          <Icon name="add" />Add Item
+        </Button>
+        <table>
+          <tr>
+            <td style="padding-left: 1rem">
+              Total
+            </td>
+            <td style="width: 40%; padding: 0.5rem; margin: -0.5rem; margin-left: 0rem">
+              <div class="p-inputgroup" :class="{ 'reset-available': receipt.hasUnknownItems }">
+                <InputNumber v-model="receipt.floatCost" mode="currency" currency="EUR" />
+                <Button v-if="receipt.hasUnknownItems" @click="onTotalReset">
+                  <Icon name="delete-back" />
+                </Button>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </template>
+    </DataTable>
+    <Button class="button-block" @click="onSaveClick">
+      Save Receipt
     </Button>
   </div>
-
-  <div style="margin-top:0.5em">
-    Date
-    <Calendar v-model="receipt.date" date-format="dd.mm.yy" />
-  </div>
-  <div style="margin-top:1em">
-    Vendor
-    <AutoComplete v-model="receipt.vendor" dropdown :suggestions="suggestedVendors"
-                  @complete="$event => suggestedVendors = exampleVendors.filter(v => v.toLowerCase().includes($event.query.toLowerCase()))"
-    />
-  </div>
-
-  <!-- Consider https://primefaces.org/primevue/showcase/#/datatable for displaying this data. -->
-  <div style="display: flex;margin-top:2em">
-    <div>
-      Items
-    </div>
-    <div style="margin-left: 180px;">
-      Cost (in ct)
-    </div>
-  </div>
-  <div v-for="item in receipt.items" :key="item.id" class="p-fluid p-field row">
-    <InputText :id="`item-label-${item.id}`" v-model="item.label" />
-    <InputNumber :id="`item-cost-${item.id}`" v-model="item.floatCost"
-                 mode="currency" currency="EUR"
-    />
-    <input v-model="item.budgeted" type="checkbox"> {{ item.budgeted }}
-  </div>
-  <Button @click="addItem">
-    Add Item
-  </Button>
-  <div>
-    <b>Total: {{ receipt.costInCurrency }} €</b>
-  </div>
-  <Button @click="onSaveClick">
-    Save Receipt
-  </Button>
 </template>
 
 <script>
+import PanZoomImage from '@/components/PanZoomImage';
+import Icon from '@/components/Icon';
 import Button from 'primevue/button';
 import AutoComplete from 'primevue/autocomplete';
 import Calendar from 'primevue/calendar';
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
 import InputText from 'primevue/inputtext';
 import InputNumber from 'primevue/inputnumber';
 
@@ -60,9 +99,13 @@ import { promptImageInput, convertImage } from '@/utils';
 export default {
   name: 'ReceiptEdit',
   components: {
+    PanZoomImage,
+    Icon,
     Button,
     AutoComplete,
     Calendar,
+    DataTable,
+    Column,
     InputText,
     InputNumber,
   },
@@ -86,20 +129,45 @@ export default {
       ],
     };
   },
+  computed: {
+    tableItems() {
+      const items = [...this.receipt.items];
+      if (this.receipt.hasUnknownItems) items.push(
+        { label: 'Other', costInCurrency: this.receipt.unknownItemsCostInCurrency, unknown: true },
+      );
+      return items;
+    },
+  },
   created() {
-    if (this.$route.params.dataURL) this.receipt.file = this.$route.params.dataURL;
+    if (this.$route.params.id) this.receipt = store.getReceiptById(this.$route.params.id);
+    else if (this.$route.params.dataURL) this.receipt.file = this.$route.params.dataURL;
+  },
+  unmounted() {
+    if (this.receipt.id) store.updateReceipt(this.receipt);
   },
   methods: {
-    addItem() {
+    onAddItem() {
       this.receipt.addItem();
     },
-    async onEditClick() {
-      let dataURL = await promptImageInput(false); // TODO: Allow cam input
+    onItemDeleteClick(id) {
+      this.receipt.deleteItem(id);
+    },
+    onVendorInput({ query }) {
+      this.suggestedVendors = Array.from(store.knownVendors).filter(vendors => {
+        return vendors.toLowerCase().includes(query.toLowerCase());
+      });
+    },
+    onTotalReset() {
+      this.receipt.resetCostOverride();
+    },
+    async onFileEdit() {
+      let dataURL = await promptImageInput(false);
       dataURL = await convertImage(dataURL);
       this.receipt.file = dataURL;
     },
     onSaveClick() {
-      store.addReceipt(this.receipt);
+      if (this.receipt.id) store.updateReceipt(this.receipt);
+      else store.addReceipt(this.receipt);
       this.$router.back();
     },
   },
@@ -107,34 +175,111 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.receipt-image {
-  position: relative;
-  display: block;
-  width: 100%;
-  height: 20vh;
-  background-size: cover;
-  background-position: center center;
-  border-radius: 0.5em;
-  overflow: hidden;
+$fixedHeight: 40vh;
 
-  &::after {
-    content: '';
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
+.fixed-content {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  z-index: 1;
+  width: 100%;
+  max-width: inherit;
+  height: $fixedHeight;
+  margin-left: -8px;
+  padding: 0 8px 8px;
+  background-color: var(--surface-a);
+  border-bottom: 1px solid var(--surface-d);
+
+  .receipt-image-container {
     height: 100%;
-    background-color: rgba(black, 0.33);
-    z-index: 1;
+    border-radius: 0.5em;
+
+    + button {
+      position: absolute;
+      bottom: 16px;
+      right: 16px;
+    }
+
+    &.receipt-no-image {
+      border: none;
+      padding: 0;
+      margin: 0;
+      font-size: inherit;
+      color: inherit;
+      background: none;
+      text-decoration: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+
+      height: 100%;
+      background-color: rgba(black, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+    }
   }
 }
 
-.row {
-  display: flex;
+.static-content {
+  padding-top: $fixedHeight;
+}
 
- + .row {
-   margin-top: 0.5em;
- }
+.input-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0.5em;
+
+  label {
+    font-size: 0.875em;
+    font-weight: bold;
+  }
+}
+
+.p-inputtext, .p-inputnumber {
+  width: 100%;
+  ::v-deep(.p-inputnumber-input) { width: 100%; }
+}
+
+.p-button:not(.icon-button):not(.reset-total-button) {
+  ::v-deep(i) { margin-right: 0.25em; }
+}
+
+::v-deep(.p-datatable.p-datatable-sm .p-datatable-footer) {
+  padding: 0;
+
+  td {
+    padding: 0.5rem;
+  }
+}
+
+.icon-button {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.reset-available {
+  button {
+    flex-shrink: 0;
+    padding: 0.5rem;
+
+    i { margin: 0 !important; }
+  }
+
+  span ::v-deep(input) {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+}
+
+.button-block {
+  display: block;
+  margin: 0.5rem;
+  width: calc(100% - 1rem);
+}
+
+.unknown-item {
+  color: var(--text-color-secondary);
+  font-style: italic;
 }
 </style>

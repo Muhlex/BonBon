@@ -1,5 +1,9 @@
 <template>
-  <main v-if="!store || !store.authInitialized" class="loading">
+  <teleport to="head">
+    <title>BonBon &ndash; Receipt Manager</title>
+  </teleport>
+
+  <main v-if="!store || !store.authInitialized || !store.dataInitialized" class="loading">
     <ProgressSpinner />
   </main>
   <template v-else>
@@ -40,12 +44,10 @@ export default {
       return store;
     },
     displayFAB() {
-      const path = this.$route.fullPath;
-      const match = '/receipts';
-      return !(path.startsWith(match) && path.length > match.length);
+      return !['ReceiptNew', 'ReceiptEdit', 'Receipt'].includes(this.$route.name);
     },
     showFABTutorial() {
-      return this.$route.fullPath === '/';
+      return this.$route.name === 'Home';
     },
   },
 };
@@ -81,9 +83,10 @@ h1, h2, h3, h4, h5, h6 {
 <style lang="scss" scoped>
 main {
   width: 100%;
-  max-width: 1024px;
+  min-height: 100vh;
+  max-width: 680px;
   margin: 0 auto;
-  padding: 0 8px;
+  padding: 8px 8px 0;
   padding-bottom: 96px;
 
   &.loading {
