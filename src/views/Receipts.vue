@@ -64,15 +64,22 @@
       </template>
     </Column>
   </DataTable>
+
+  <FilterOverlay 
+    v-model:store="store"
+    v-model:open="open"
+  />
 </template>
 
 <script>
 import store from '@/store';
-import dateFormat from 'dateformat';
+// import dateFormat from 'dateformat';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Button from 'primevue/button';
 import Icon from '@/components/Icon';
+
+import FilterOverlay from '@/components/FilterOverlay';
 
 export default {
   name: 'ReceiptsList',
@@ -81,11 +88,16 @@ export default {
     Column,
     Button,
     Icon,
+    // Filter
+    FilterOverlay,
   },
   data() {
     return {
       store,
-      expandedRows: [],
+      // FILTER DATA
+      //Overlay Open;
+      open: true,
+      filters: {},
       // Dummy-Data Switch
       hideDummyData: false,
     };
@@ -96,7 +108,7 @@ export default {
     },
   },
   created() {
-    console.log(this.receipts);
+    // console.log(this.receipts);
   },
   mounted() {
     
@@ -119,6 +131,13 @@ export default {
     },
     onEditClick(receiptID) {
       this.$router.push(`/receipts/${receiptID}/edit`);
+    },
+    //FILTER METHODS
+    // Filter VENDOR
+    onVendorInput({ query }) {
+      this.suggestedVendors = Array.from(store.knownVendors).filter(vendors => {
+        return vendors.toLowerCase().includes(query.toLowerCase());
+      });
     },
   },
 };

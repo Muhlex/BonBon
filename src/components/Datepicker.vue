@@ -37,17 +37,6 @@
         @date-select="setSelection($event)"
       /> 
     </div>
-    <div
-      v-if="showSubmit"
-      class="submit-container"
-    >
-      <Button 
-        class="submit-button"
-        @click="submitSelection"
-      >
-        Apply Filter
-      </Button>
-    </div>
   </div>
 </template>
 
@@ -60,14 +49,7 @@ export default {
   name: 'Datepicker',
   components: {
     Calendar,
-    Button,
     RadioButton,
-  },
-  props: {
-    showSubmit: {
-      type: Boolean,
-      default: false,
-    },
   },
   emits: [
     'submit',
@@ -96,10 +78,6 @@ export default {
           break;
       }
     },
-    submitSelection(event) {
-      this.$emit('submit', this.selection);
-      this.$refs.calendar.onClearButtonClick(event);
-    },
   },
 };
 </script>
@@ -108,7 +86,6 @@ export default {
 .date-range {
   .select-list {
     display: flex;
-    justify-content: center;
     margin:0;
     padding: 0;
     list-style-type: none;
@@ -118,7 +95,7 @@ export default {
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    padding: 8px;
+    padding: 0 8px;
   }
 
   .radio {
@@ -129,12 +106,6 @@ export default {
 .calendar-container {
   display: flex;
   justify-content: center;
-}
-
-.submit-container {
-  display: flex;
-  justify-content: center;
-  padding: 8px;
 }
 </style>
 
