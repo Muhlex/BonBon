@@ -18,7 +18,7 @@
 
   <DataTable
     id="receipt-list"
-    :value="receipts"
+    :value="filteredReceipts"
     sortMode="single"
     sortField="date"
     :sortOrder="-1"
@@ -54,9 +54,17 @@
     <Column 
       field="interaction"
     >
+      <template #header>
+        <Button
+          class="filter-button set-filter"
+          @click="() => open = true"
+        >
+          <Icon name="filter" />
+        </Button>
+      </template>
       <template #body="slotProps">
         <Button
-          class="filter-button"
+          class="edit-button"
           @click="() => onEditClick(slotProps.data.id)"
         >
           <Icon name="edit" />
@@ -65,9 +73,12 @@
     </Column>
   </DataTable>
 
+  <p v-if="error">No Filters matching. Please change Filters or Reset.</p>
+
   <FilterOverlay 
     v-model:store="store"
     v-model:open="open"
+    @submitFilter="setFilters"
   />
 </template>
 
@@ -96,22 +107,22 @@ export default {
       store,
       // FILTER DATA
       //Overlay Open;
-      open: true,
+      open: false,
       filters: {},
       // Dummy-Data Switch
       hideDummyData: false,
+      myRecepits: this.receipts,
+      // Error
+      error: false,
     };
   },
   computed: {
     receipts() {
       return store.receipts;
     },
-  },
-  created() {
-    // console.log(this.receipts);
-  },
-  mounted() {
-    
+    filteredReceipts() {
+      return this.filterReceipts();
+    },
   },
   methods: {
     addExampleReceipts() {
@@ -132,12 +143,50 @@ export default {
     onEditClick(receiptID) {
       this.$router.push(`/receipts/${receiptID}/edit`);
     },
-    //FILTER METHODS
-    // Filter VENDOR
-    onVendorInput({ query }) {
-      this.suggestedVendors = Array.from(store.knownVendors).filter(vendors => {
-        return vendors.toLowerCase().includes(query.toLowerCase());
+    setFilters(filters) {
+      this.filters = filters;
+      this.filterReceipts();
+    },
+    filterReceipts() {
+      this.error = false;
+      
+      const f = this.filters;
+      const filteredReceipts = [];
+
+      if(Object.keys(f).length === 0) return this.receipts;
+
+      this.receipts.filter(r => {
+        const match = [];
+        // Filter through FiltersArray
+        Object.keys(this.filters).forEach(k => {
+          switch(k) {
+            case 'vendor':
+              if(f[k] !== null) {
+                r.vendor === f[k] ? match.push(true) : match.push(false);
+              }
+              break;
+            case 'cost':
+              if (f[k].length > 0) {
+                //min-max-range
+                if(f[k].length > 1) {
+                  r.floatCost >= f[k][0] && r.floatCost <= f[k][1] ? match.push(true) : match.push(false);
+                  break;
+                }
+                // min-range
+                r.floatCost >= f[k][0] ? match.push(true) : match.push(false);
+              }
+              break;
+            case 'timestamp':
+              if(f[k] !== null) {
+                r.date >= f[k][0] && r.date <= f[k][1] ? match.push(true) : match.push(false);
+              }
+              break;
+          }
+        });
+        if (match.every(b => b === true)) filteredReceipts.push(r);
       });
+      if(filteredReceipts.length === 0) this.error = true;
+      return filteredReceipts;
     },
   },
 };
@@ -146,9 +195,6 @@ export default {
 <style lang="scss">
 #receipt-list {
   margin-top: 16px;
-  border: 1px solid lightgrey;
-  border-radius: 8px;
-  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
   overflow: hidden;
 
   span, p, td, button {
@@ -197,7 +243,6 @@ h1 {
   margin: 8px 0;
   padding: 8px;
   border-radius: 8px;
-  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
 
   // Color-Styles
   color: white;
@@ -219,5 +264,4 @@ h1 {
     font-size: 11px;
   }
 }
-
 </style>

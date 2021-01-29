@@ -70,6 +70,8 @@ export default {
       switch(this.selectionMode) {
         case 'single':
           this.selection[0] = date;
+          this.selection[1] = new Date(date);
+          this.selection[1].setHours(23, 59, 59, 999);
           break;
         case 'range':
           if(this.selection.length === 1) date.setHours(23, 59, 59, 999);
@@ -77,6 +79,12 @@ export default {
           this.selection.push(date);
           break;
       }
+
+      this.$emit('submit', this.selection);
+    },
+    reset(event) {
+      this.$refs.calendar.onClearButtonClick(event);
+      this.$emit('submit', null);
     },
   },
 };

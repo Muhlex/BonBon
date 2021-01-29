@@ -19,10 +19,11 @@
         <label for="filter-vendor" class="area-label">Filter by Vendor</label>
         <AutoComplete
           id="filter-vendor"
+          ref="vendorInput"
           v-model="vendor"
           :dropdown="true"
           :suggestions="suggestedVendors"
-          @complete="onInput($event)"
+          @complete="onVendorInput($event)"
         />
       </div>
 
@@ -35,11 +36,25 @@
         >
           <div class="price-input-container min-price">
             <label for="input-min-price">min Price</label>
-            <input id="input-min-price" class="price-input" type="number" placeholder="0">
+            <input 
+              id="input-min-price"
+              ref="minPrice"
+              class="price-input"
+              type="number"
+              placeholder="0"
+              @change="setPriceRange($event, 'minPrice')"
+            >
           </div>
           <div class="price-input-container max-price">
             <label for="input-max-price">max Price</label>
-            <input id="input-max-price" class="price-input" type="number" placeholder="0">
+            <input 
+              id="input-max-price"
+              ref="maxPrice"
+              class="price-input"
+              type="number"
+              placeholder="0"
+              @change="setPriceRange($event, 'maxPrice')"
+            >
           </div>
         </div>
       </div>
@@ -47,12 +62,22 @@
       <!-- Date Filter -->
       <div class="filter-area filter-area-date">
         <label for="datepicker-component" class="area-label">Filter by Date</label>
-        <Datepicker id="datepicker-component" class="filter-datepicker" />
+        <Datepicker
+          id="datepicker-component"
+          ref="datepicker"
+          class="filter-datepicker"
+          @submit="getDateSelection"
+        />
       </div>
 
       <!-- Filter Submit -->
       <div class="filter-area filter-area-submit">
-        <Button>Set Filter</Button>
+        <Button class="filter-btn p-button-outlined" @click="reset($event, true)">
+          Reset Filter
+        </Button>
+        <Button class="filter-btn" @click="setFilter($event)">
+          Set Filter
+        </Button>
       </div>
     </div>
   </div>
@@ -84,15 +109,14 @@ export default {
   },
   emits: [
     'update:open',
+    'submitFilter',
   ],
   data() {
     return {
-      // DATA VENODR-FILTER
       vendor: null,
       suggestedVendors: [],
-      // DATA PRICE-FILTER
-      minPrice: null,
-      maxPrice: null,
+      priceRange: [],
+      dateSelection: null,
     };
   },
   computed: {
@@ -102,13 +126,43 @@ export default {
   },
   methods: {
     closeOverlay() {
-      console.log('closeOverlay triggered');
       this.$emit('update:open', false);
     },
-    onInput({ query }) {
+    onVendorInput({ query }) {
       this.suggestedVendors = Array.from(this.store.knownVendors).filter(vendors => {
         return vendors.toLowerCase().includes(query.toLowerCase());
       });
+    },
+    setPriceRange(e, value) {
+      value === 'minPrice' ? 
+        this.priceRange[0] = parseFloat(e.target.value):
+        this.priceRange[1] = parseFloat(e.target.value);
+      
+      if(!this.priceRange[0]) this.priceRange[0] = 0;
+    },
+    getDateSelection(selection) {
+      this.dateSelection = selection;
+    },
+    setFilter(e) {
+      this.$emit('update:open', false);
+      this.$emit('submitFilter',{
+        vendor: this.vendor,
+        cost: this.priceRange,
+        timestamp: this.dateSelection,
+      });
+
+      this.reset(e);
+    },
+    reset(e, clear = false) {
+      this.$refs.datepicker.reset(e);
+      this.vendor = null;
+      this.priceRange = [];
+
+      if (clear) {
+        this.$emit('submitFilter',{});
+      }
+
+      this.$emit('update:open', false);
     },
   },
 };
@@ -194,5 +248,9 @@ h2 {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.filter-btn + .filter-btn {
+  margin-left: 10px;
 }
 </style>
