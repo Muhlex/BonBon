@@ -19,9 +19,7 @@ class Store {
   }
 
   get user() { return this.state.user; }
-  get receipts() {
-    return [...this._state.receipts, ...this._state.dummyReceipts];
-  }
+  get receipts() { return this._state.receipts; }
   get authInitialized() { return this.state.authInitialized; }
   get dataInitialized() { return this.state.dataInitialized; }
 
@@ -80,10 +78,8 @@ class Store {
     return computed(() => copy.sort((a, b) => a.date - b.date));
   }
 
-  getBudgetedInRange(from, to = new Date()) {
-    // Retrieve all items marked to appear in budget book in a specific time period.
-    const receipts = this.receipts.filter(({ timestamp }) => timestamp > from && timestamp < to);
-    return receipts.map(({ timestamp, budgetBookItems }) => ({ timestamp, items: budgetBookItems }));
+  addDummyReceipts() {
+    this._state.dummyReceipts.forEach(r => this.addReceipt(r));
   }
 }
 

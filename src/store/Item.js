@@ -2,12 +2,11 @@ import { reactive, computed } from 'vue';
 import { nanoid } from 'nanoid';
 
 export default class Item {
-  constructor({ id, label, cost, budgeted } = {}) {
+  constructor({ id, label, cost } = {}) {
     this._state = reactive({
       id: id || nanoid(), // Only used for Vue rendering purposes
       label: label || null,
       cost: cost || 0,
-      budgeted: budgeted || false,
     });
   }
 
@@ -18,9 +17,6 @@ export default class Item {
 
   get cost() { return this._state.cost; }
   set cost(value) { this._state.cost = parseInt(value, 10); }
-
-  get budgeted() { return this._state.budgeted; }
-  set budgeted(value) { this._state.budgeted = Boolean(value); }
 
   // Can't use an actual JS getter or setter here because Vue marks the property as read-only
   // https://vue-composition-api-rfc.netlify.app/api.html#computed
