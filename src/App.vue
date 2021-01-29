@@ -3,7 +3,7 @@
     <title>BonBon &ndash; Receipt Manager</title>
   </teleport>
 
-  <main v-if="!store || !store.authInitialized || !store.dataInitialized" class="loading">
+  <main v-if="!store || !store.authInitialized || store.user && !store.dataInitialized" class="loading">
     <ProgressSpinner />
   </main>
   <template v-else>

@@ -1,12 +1,15 @@
 <template>
   <nav class="app-bar">
     <router-link
-      v-for="({ to, text, iconName }, index) in items"
+      v-for="({ to, text, iconName, disabled }, index) in items"
       :key="to"
       :to="to"
-      :class="{ 'router-link-active': to !== '/' && $route.fullPath.startsWith(to) }"
-      :tabindex="index + 1"
-      :accesskey="index + 1"
+      :class="{
+        'router-link-active': to !== '/' && $route.fullPath.startsWith(to),
+        'disabled': disabled,
+      }"
+      :tabindex="!disabled ? index + 1 : -1"
+      :accesskey="!disabled && index + 1"
     >
       <Icon :name="iconName" />
       <span>{{ text }}</span>
@@ -39,6 +42,7 @@ export default {
           to: '/stats',
           text: 'Statistics',
           iconName: 'stats',
+          disabled: true,
         },
         {
           to: '/settings',
@@ -75,6 +79,11 @@ export default {
     &.router-link-active {
       color: var(--primary-color);
       span { font-weight: bold; }
+    }
+
+    &.disabled {
+      opacity: 0.33;
+      pointer-events: none;
     }
 
     span {

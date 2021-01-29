@@ -1,5 +1,5 @@
 <template>
-  Statistics View
+  Statistics view coming soon!
 </template>
 
 <script>
