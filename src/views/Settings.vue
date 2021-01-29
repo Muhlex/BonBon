@@ -1,7 +1,9 @@
 <template>
   <div v-if="user">
-    Hello {{ user.displayName }}.<br>User ID: {{ user.uid }}
-    <p>Not you?</p>
+    <p style="margin-top: 0;">
+      Hello <strong>{{ user.displayName }}</strong> (logged in with Google).
+      <br>Not you?
+    </p>
     <Button @click="onChangeAccount">
       Change Account
     </Button>
@@ -42,6 +44,8 @@ export default {
 };
 </script>
 
-<style>
-
+<style lang="scss" scoped>
+button + button {
+  margin-left: 0.5em;
+}
 </style>

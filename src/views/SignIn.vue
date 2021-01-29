@@ -1,7 +1,9 @@
 <template>
-  <p>Welcome to BonBon.</p>
+  <p style="margin-top: 0;">
+    Welcome to BonBon.
+  </p>
   <p>
-    To synchronize your data between devices,
+    To allow for synchronization of your data between devices,
     please sign in.
   </p>
   <Button @click="onSignInClick">

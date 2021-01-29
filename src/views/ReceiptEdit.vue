@@ -143,6 +143,7 @@ export default {
     else if (this.$route.params.dataURL) this.receipt.file = this.$route.params.dataURL;
   },
   unmounted() {
+    this.cleanItems();
     if (this.receipt.id) store.updateReceipt(this.receipt);
   },
   methods: {
@@ -166,9 +167,14 @@ export default {
       this.receipt.file = dataURL;
     },
     onSaveClick() {
+      this.cleanItems();
       if (this.receipt.id) store.updateReceipt(this.receipt);
       else store.addReceipt(this.receipt);
       this.$router.back();
+    },
+    cleanItems() {
+      // Removes empty items
+      this.receipt.items = this.receipt.items.filter(({ label, cost }) => label || cost);
     },
   },
 };
