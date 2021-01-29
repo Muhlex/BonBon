@@ -64,7 +64,13 @@
       </template>
       <template #body="slotProps">
         <Button
-          class="edit-button"
+          class="receipt-button view-button"
+          @click="() => onViewClick(slotProps.data.id)"
+        >
+          <Icon name="view" />
+        </Button>
+        <Button
+          class="receipt-button edit-button p-button-outlined"
           @click="() => onEditClick(slotProps.data.id)"
         >
           <Icon name="edit" />
@@ -206,6 +212,10 @@ export default {
     padding: 4px;
   }
 
+  button + button{
+    margin-left: 5px;
+  }
+
   tr > th,
   tr > td {
     padding: 12px 8px !important;
@@ -213,7 +223,7 @@ export default {
 
     &:last-child {
       padding: 12px 8px 12px 0 !important;
-      width: 35px !important;
+      width: 75px !important;
     }
   }
 }
