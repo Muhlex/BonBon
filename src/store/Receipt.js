@@ -44,6 +44,8 @@ export default class Receipt {
     this._state.items = items ? items.map(i => (i instanceof Item) ? i : new Item(i)) : [];
   }
 
+  get dummy() { return this._state.dummy; }
+
   // Can't use an actual JS getter or setter here because Vue marks the property as read-only
   // https://vue-composition-api-rfc.netlify.app/api.html#computed
   get cost() {
@@ -78,10 +80,6 @@ export default class Receipt {
   get unknownItemsCostInCurrency() {
     const itemCost = this._state.items.reduce((total, { cost }) => total + cost, 0) || 0;
     return computed(() => ((this._state.costOverride - itemCost) / 100).toFixed(2).replace('.', ','));
-  }
-
-  get budgetedItems() {
-    return computed(() => this.items.filter(item => item.budgeted));
   }
 
   resetCostOverride() {

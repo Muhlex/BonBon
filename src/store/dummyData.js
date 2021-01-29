@@ -9,48 +9,41 @@ const items = [
   {
     label: 'Tomatoes',
     cost: 230,
-    budgeted: true,
   },
   {
     label: 'Soap',
     cost: 89,
-    budgeted: true,
   },
   {
     label: 'Pizza',
     cost: 339,
-    budgeted: true,
   },
   {
     label: 'Icecream',
     cost: 120,
-    budgeted: true,
   },
   {
     label: 'Potted Plant',
     cost: 999,
-    budgeted: true,
   },
   {
     label: 'Toothpaste',
     cost: 429,
-    budgeted: true,
   },
   {
     label: 'Smartphone',
     cost: 38900,
-    budgeted: true,
   },
 ];
 
 export default {
   receipts: [
     {
-      id: 'test-1',
+      id: 'example-1',
       timestamp: new Date(2020, 11, 24, 10, 33).toISOString(),
       vendor: 'REWE',
       costOverride: null,
-      file: files[0],
+      file: files[3],
       items: [
         items[0],
         items[1],
@@ -59,7 +52,7 @@ export default {
       ],
     },
     {
-      id: 'test-2',
+      id: 'example-2',
       timestamp: new Date(2020, 11, 20).toISOString(),
       vendor: 'Lidl',
       costOverride: null,
@@ -73,7 +66,7 @@ export default {
       ],
     },
     {
-      id: 'test-3',
+      id: 'example-3',
       timestamp: new Date(2021, 0, 2).toISOString(),
       vendor: 'Lidl',
       costOverride: null,
@@ -85,7 +78,7 @@ export default {
       ],
     },
     {
-      id: 'test-4',
+      id: 'example-4',
       timestamp: new Date(2021, 0, 4).toISOString(),
       vendor: 'Media Markt',
       costOverride: null,
@@ -95,7 +88,7 @@ export default {
       ],
     },
     {
-      id: 'test-5',
+      id: 'example-5',
       timestamp: new Date(2020, 0, 11).toISOString(),
       vendor: 'Edeka',
       costOverride: 700,
