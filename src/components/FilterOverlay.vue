@@ -1,86 +1,86 @@
 <template>
-  <div
-    v-if="open"
-    class="filter-overview-container"
-  >
-    <div class="filter-overview">
-      <h2>
-        Filter
-        <Icon 
-          class="close-icon"
-          name="close"
-          @click="closeOverlay"
-        />
-      </h2>
+  <transition name="slide-bottom">
+    <div
+      v-if="open"
+      class="filter-overview-container"
+    >
+      <div class="filter-overview">
+        <h2>
+          Filter
+          <Icon
+            class="close-icon"
+            name="close"
+            @click="closeOverlay"
+          />
+        </h2>
 
-      <!-- Filter Content -->
-      <!-- Vendor Filter -->
-      <div class="filter-area filter-area-vendor">
-        <label for="filter-vendor" class="area-label">Filter by Vendor</label>
-        <AutoComplete
-          id="filter-vendor"
-          ref="vendorInput"
-          v-model="vendor"
-          :dropdown="true"
-          :suggestions="suggestedVendors"
-          @complete="onVendorInput($event)"
-        />
-      </div>
+        <!-- Filter Content -->
+        <!-- Vendor Filter -->
+        <div class="filter-area filter-area-vendor">
+          <label for="filter-vendor" class="area-label">Filter by Vendor</label>
+          <AutoComplete
+            id="filter-vendor"
+            ref="vendorInput"
+            v-model="vendor"
+            :dropdown="true"
+            :suggestions="suggestedVendors"
+            @complete="onVendorInput($event)"
+          />
+        </div>
 
-      <!-- Price Filter -->
-      <div class="filter-area filter-area-price">
-        <label for="filter-price" class="area-label">Filter by Price</label>
-        <div
-          id="filter-price"
-          class="filter-price-input"
-        >
-          <div class="price-input-container min-price">
-            <label for="input-min-price">min Price</label>
-            <input 
-              id="input-min-price"
-              ref="minPrice"
-              class="price-input"
-              type="number"
-              placeholder="0"
-              @change="setPriceRange($event, 'minPrice')"
-            >
-          </div>
-          <div class="price-input-container max-price">
-            <label for="input-max-price">max Price</label>
-            <input 
-              id="input-max-price"
-              ref="maxPrice"
-              class="price-input"
-              type="number"
-              placeholder="0"
-              @change="setPriceRange($event, 'maxPrice')"
-            >
+        <!-- Price Filter -->
+        <div class="filter-area filter-area-price">
+          <label for="filter-price" class="area-label">Filter by Price Range</label>
+          <div
+            id="filter-price"
+            class="filter-price-input"
+          >
+            <div class="price-input-container min-price">
+              <label for="input-min-price">minimum (in €)</label>
+              <input
+                id="input-min-price"
+                ref="minPrice"
+                class="price-input"
+                type="number"
+                @change="setPriceRange($event, 'minPrice')"
+              >
+            </div>
+            <div class="price-input-container max-price">
+              <label for="input-max-price">maximum (in €)</label>
+              <input
+                id="input-max-price"
+                ref="maxPrice"
+                class="price-input"
+                type="number"
+                @change="setPriceRange($event, 'maxPrice')"
+              >
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Date Filter -->
-      <div class="filter-area filter-area-date">
-        <label for="datepicker-component" class="area-label">Filter by Date</label>
-        <Datepicker
-          id="datepicker-component"
-          ref="datepicker"
-          class="filter-datepicker"
-          @submit="getDateSelection"
-        />
-      </div>
+        <!-- Date Filter -->
+        <div class="filter-area filter-area-date">
+          <label for="datepicker-component" class="area-label">Filter by Date</label>
+          <Datepicker
+            id="datepicker-component"
+            ref="datepicker"
+            class="filter-datepicker"
+            @submit="getDateSelection"
+          />
+        </div>
 
-      <!-- Filter Submit -->
-      <div class="filter-area filter-area-submit">
-        <Button class="filter-btn p-button-outlined" @click="reset($event, true)">
-          Reset Filter
-        </Button>
-        <Button class="filter-btn" @click="setFilter($event)">
-          Set Filter
-        </Button>
+        <!-- Filter Submit -->
+        <div class="filter-area filter-area-submit">
+          <Button class="filter-btn p-button-outlined" @click="reset($event, true)">
+            Reset Filter
+          </Button>
+          <Button class="filter-btn" @click="setFilter($event)">
+            Set Filter
+          </Button>
+        </div>
       </div>
     </div>
-  </div>
+  </transition>
 </template>
 
 <script>
@@ -134,10 +134,10 @@ export default {
       });
     },
     setPriceRange(e, value) {
-      value === 'minPrice' ? 
+      value === 'minPrice' ?
         this.priceRange[0] = parseFloat(e.target.value):
         this.priceRange[1] = parseFloat(e.target.value);
-      
+
       if(!this.priceRange[0]) this.priceRange[0] = 0;
     },
     getDateSelection(selection) {
@@ -186,9 +186,12 @@ export default {
   position: relative;
   height: 100%;
   width: 100%;
+  max-width: 480px;
   padding: 16px;
+  margin: 0.5em;
+  margin-top: 1em;
   background: white;
-  border-radius: 8px;
+  border-radius: 3px;
 }
 
 h2 {
@@ -201,6 +204,7 @@ h2 {
     top: 50%;
     right: 0;
     transform: translateY(-50%);
+    cursor: pointer;
   }
 }
 
@@ -252,5 +256,23 @@ h2 {
 
 .filter-btn + .filter-btn {
   margin-left: 10px;
+}
+
+.slide-bottom-enter-active,
+.slide-bottom-leave-active {
+  transition: opacity 300ms ease;
+
+  .filter-overview {
+    transition: transform 300ms ease;
+  }
+}
+
+.slide-bottom-enter-from,
+.slide-bottom-leave-to {
+  opacity: 0;
+
+  .filter-overview {
+    transform: translateY(64px);
+  }
 }
 </style>

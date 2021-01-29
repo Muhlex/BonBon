@@ -1,29 +1,28 @@
 <template>
+  <!-- eslint-disable vue/attribute-hyphenation -->
   <div class="head">
     <h1>Receipts</h1>
   </div>
 
-  <!-- Dummy-Data COntroles -->
   <div
-    v-if="!hideDummyData" 
-    class="dummy-data data-controles"
+    v-if="!receipts.length"
   >
-    <button @click="addExampleReceipts">
-      Add example receipts
-    </button>
-    <button @click="addExampleReceipt">
-      Add single example receipt
-    </button>
+    <p>You did not add any purchases yet.</p>
+    <p>Try adding a receipt using the button in the bottom right!</p>
   </div>
 
   <DataTable
+    v-else
     id="receipt-list"
     :value="filteredReceipts"
     sortMode="single"
     sortField="date"
     :sortOrder="-1"
+    class="p-datatable-striped"
+    selectionMode="single"
+    @rowClick="onRowClick"
   >
-    <Column 
+    <Column
       field="vendor"
       header="Vendor"
       :sortable="true"
@@ -32,7 +31,7 @@
         {{ slotProps.data.vendor }}
       </template>
     </Column>
-    <Column 
+    <Column
       field="date"
       header="Date"
       :sortable="true"
@@ -42,7 +41,7 @@
         {{ slotProps.data.dateString }}
       </template>
     </Column>
-    <Column 
+    <Column
       field="cost"
       header="Cost"
       :sortable="true"
@@ -51,7 +50,7 @@
         {{ slotProps.data.costInCurrency }}
       </template>
     </Column>
-    <Column 
+    <Column
       field="interaction"
     >
       <template #header>
@@ -64,14 +63,8 @@
       </template>
       <template #body="slotProps">
         <Button
-          class="receipt-button view-button"
-          @click="() => onViewClick(slotProps.data.id)"
-        >
-          <Icon name="view" />
-        </Button>
-        <Button
           class="receipt-button edit-button p-button-outlined"
-          @click="() => onEditClick(slotProps.data.id)"
+          @click="e => onEditClick(e, slotProps.data.id)"
         >
           <Icon name="edit" />
         </Button>
@@ -79,9 +72,11 @@
     </Column>
   </DataTable>
 
-  <p v-if="error">No Filters matching. Please change Filters or Reset.</p>
+  <p v-if="error">
+    No Filters matching. Please change Filters or Reset.
+  </p>
 
-  <FilterOverlay 
+  <FilterOverlay
     v-model:store="store"
     v-model:open="open"
     @submitFilter="setFilters"
@@ -115,8 +110,6 @@ export default {
       //Overlay Open;
       open: false,
       filters: {},
-      // Dummy-Data Switch
-      hideDummyData: false,
       myRecepits: this.receipts,
       // Error
       error: false,
@@ -131,22 +124,11 @@ export default {
     },
   },
   methods: {
-    addExampleReceipts() {
-      store.addReceipt({ vendor: 'Edeka', costOverride: 1499 });
-
-      store.addReceipt({ vendor: 'REWE', items: [
-        { label: 'Zahnpasta', cost: 149 },
-        { label: 'Fertigpizza', cost: 320, budgeted: true },
-        { label: 'Tomaten', cost: 76 },
-      ] });
+    onRowClick(event) {
+      this.$router.push(`/receipts/${event.data.id}`);
     },
-    addExampleReceipt() {
-      store.addReceipt({ vendor: 'PENNY Markt', costOverride: 2580 });
-    },
-    onViewClick(receiptID) {
-      this.$router.push(`/receipts/${receiptID}`);
-    },
-    onEditClick(receiptID) {
+    onEditClick(event, receiptID) {
+      event.stopPropagation();
       this.$router.push(`/receipts/${receiptID}/edit`);
     },
     setFilters(filters) {
@@ -155,7 +137,7 @@ export default {
     },
     filterReceipts() {
       this.error = false;
-      
+
       const f = this.filters;
       const filteredReceipts = [];
 
@@ -204,15 +186,14 @@ export default {
   overflow: hidden;
 
   span, p, td, button {
-    font-size: 0.7rem !important;
-    font-weight: 700;
+    font-size: 0.875rem !important;
   }
 
   button {
     padding: 4px;
   }
 
-  button + button{
+  button + button {
     margin-left: 5px;
   }
 
@@ -223,7 +204,7 @@ export default {
 
     &:last-child {
       padding: 12px 8px 12px 0 !important;
-      width: 75px !important;
+      width: 40px !important;
     }
   }
 }
@@ -247,31 +228,10 @@ h1 {
   text-align: center;
 }
 
-// Receipts Head Steyles
 .head {
-  // Box-Styles
-  margin: 8px 0;
-  padding: 8px;
-  border-radius: 8px;
-
-  // Color-Styles
-  color: white;
-  background: #2196F3;
-}
-
-
-// Dummy-Data Data-Controles
-.data-controles {
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-
-  padding: 8px;
-  border: 1px solid lightgray;
-  border-radius: 8px;
-
-  button {
-    font-size: 11px;
-  }
+  margin: -0.5rem;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background-color: var(--surface-b);
 }
 </style>
