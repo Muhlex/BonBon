@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHashHistory } from 'vue-router';
 import { publicPath } from '../vue.config';
 
 import Home from '@/views/Home';
@@ -10,7 +10,7 @@ import Settings from '@/views/Settings';
 import Stats from '@/views/Stats';
 
 const router = createRouter({
-  history: createWebHistory(publicPath),
+  history: createWebHashHistory(publicPath), // use hashes due to hosting with GitHub pages
   routes: [
     { path: '/', component: Home, name: 'Home' },
     { path: '/signin', component: SignIn, name: 'SignIn' },

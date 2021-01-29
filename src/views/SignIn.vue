@@ -23,7 +23,7 @@ import Button from 'primevue/button';
 import store from '@/store';
 
 export default {
-  name: 'LogIn',
+  name: 'SignIn',
   components: {
     Button,
   },
