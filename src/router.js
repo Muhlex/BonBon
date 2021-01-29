@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import { publicPath } from '../vue.config';
 
 import Home from '@/views/Home';
 import SignIn from '@/views/SignIn';
@@ -9,7 +10,7 @@ import Settings from '@/views/Settings';
 import Stats from '@/views/Stats';
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHistory(publicPath),
   routes: [
     { path: '/', component: Home, name: 'Home' },
     { path: '/signin', component: SignIn, name: 'SignIn' },
