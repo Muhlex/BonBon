@@ -56,6 +56,7 @@ export default {
 <style lang="scss">
 body {
   margin: 0;
+  overflow-y: scroll;
 }
 
 #app {
@@ -99,9 +100,12 @@ main {
 }
 
 .bottom {
+  max-width: 680px;
+  margin: 0 auto;
   position: fixed;
   bottom: 0;
-  left: 0;
+  left: 50%;
+  transform: translateX(-50%);
   width: 100%;
   display: flex;
   flex-direction: column;

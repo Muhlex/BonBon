@@ -44,8 +44,6 @@ export default class Receipt {
     this._state.items = items ? items.map(i => (i instanceof Item) ? i : new Item(i)) : [];
   }
 
-  get dummy() { return this._state.dummy; }
-
   // Can't use an actual JS getter or setter here because Vue marks the property as read-only
   // https://vue-composition-api-rfc.netlify.app/api.html#computed
   get cost() {

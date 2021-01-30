@@ -31,7 +31,7 @@ auth.onAuthStateChanged(user => {
     userDoc.set({}, { merge: true });
     // Subscribe to user's state changes and store unsubscribe function
     unsubscribe = userDoc.collection('receipts').onSnapshot(snapshot => {
-      store.updateReceipts(snapshot.docs.map(doc => {
+      store.initReceipts(snapshot.docs.map(doc => {
         return { ...doc.data(), id: doc.id };
       }));
     });

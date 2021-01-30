@@ -113,20 +113,7 @@ export default {
     return {
       receipt: new Receipt(),
       suggestedVendors: [],
-      exampleVendors: [
-        'REWE',
-        'LIDL',
-        'real',
-        'Edeka',
-        'Kaufland',
-        'PENNY Markt',
-        'Naturgut',
-        'ALDI Süd',
-        'tegut',
-        'Netto',
-        'nahkauf',
-        'Norma',
-      ],
+      saveClicked: false,
     };
   },
   computed: {
@@ -142,7 +129,8 @@ export default {
     if (this.$route.params.id) this.receipt = store.getReceiptById(this.$route.params.id);
     else if (this.$route.params.dataURL) this.receipt.file = this.$route.params.dataURL;
   },
-  unmounted() {
+  beforeUnmount() {
+    if (this.saveClicked) return;
     this.cleanItems();
     if (this.receipt.id) store.updateReceipt(this.receipt);
   },
@@ -151,7 +139,8 @@ export default {
       this.receipt.addItem();
     },
     onItemDeleteClick(id) {
-      this.receipt.deleteItem(id);
+      if (!id) this.receipt.resetCostOverride();
+      else this.receipt.deleteItem(id);
     },
     onVendorInput({ query }) {
       this.suggestedVendors = Array.from(store.knownVendors).filter(vendors => {
@@ -167,6 +156,7 @@ export default {
       this.receipt.file = dataURL;
     },
     onSaveClick() {
+      this.saveClicked = true;
       this.cleanItems();
       if (this.receipt.id) store.updateReceipt(this.receipt);
       else store.addReceipt(this.receipt);

@@ -24,11 +24,15 @@
     </Column>
     <Column
       header="Price (in €)"
-      field="costInCurrency"
+      field="cost"
       :sortable="true"
       bodyStyle="text-align: right;"
       headerStyle="text-align: right; width: 40%;"
-    />
+    >
+      <template #body="item">
+        <span>{{ item.data.costInCurrency }}</span>
+      </template>
+    </Column>
     <template #footer>
       <table>
         <tr>

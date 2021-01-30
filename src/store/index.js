@@ -43,7 +43,7 @@ class Store {
     this._state.authInitialized = true;
   }
 
-  updateReceipts(receipts) {
+  initReceipts(receipts) {
     this._state.receipts = receipts.map(receipt => {
       return receipt instanceof Receipt ? receipt : new Receipt(receipt);
     });
@@ -51,7 +51,8 @@ class Store {
   }
 
   _flattenReceipt(r) {
-    const flatR = r._state || r;
+    const rCopy = JSON.parse(JSON.stringify(r));
+    const flatR = rCopy._state || rCopy;
     if (flatR.items) flatR.items = flatR.items.map(item => item._state || item);
     return flatR;
   }
