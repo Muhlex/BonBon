@@ -28,9 +28,6 @@ export default class Item {
   }
 
   get costInCurrency() {
-    return computed(() => {
-      const result = (this.cost / 100).toFixed(2).replace('.', ',')
-      return result;
-    });
+    return computed(() => (this.cost / 100).toFixed(2).replace('.', ','));
   }
 }
