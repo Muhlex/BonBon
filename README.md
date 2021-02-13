@@ -1,6 +1,8 @@
 # BonBon
 A web-app for digital receipt management.
 
+Developed for the course *Mobile Medien* at Hochschule der Medien. Supervised by Prof. Dr. Jörg Westbomke.
+
 ## Project setup
 ```
 npm install
