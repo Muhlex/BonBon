@@ -27,8 +27,11 @@ export default {
     };
   },
   methods: {
-    onTouchchange({ touches }) {
+    onTouchchange(event) {
+      const { touches } = event;
       if (touches.length !== 2) return;
+
+      event.preventDefault();
 
       const distance = Math.hypot(
         touches[0].clientX - touches[1].clientX,
